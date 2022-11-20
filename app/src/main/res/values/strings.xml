@@ -1,0 +1,71 @@
+<resources >
+    <string name="app_name">Coop Project</string>
+    <string name="home_navigation">Home</string>
+    <string name="Insights_navigation">Insights</string>
+    <string name="Profile_navigation">Profile</string>
+    <string name="hour_option_1">\ hr\</string>
+    <string name="hour_option_2"> \ hr \ </string>
+    <string name="minute_option">\ m\</string>
+    <string name="start_exercising">Start Exercising</string>
+
+    <string name="day1">Sunday</string>
+    <string name="day2">Monday</string>
+    <string name="day3">Tuesday</string>
+    <string name="day4">Wednesday</string>
+    <string name="day5">Friday</string>
+    <string name="day6">Saturday</string>
+    <string name="day7">Thursday</string>
+
+    <string name="ex1">Chest Day</string>
+    <string name="ex2">Leg day</string>
+    <string name="ex3">Shoulder Day</string>
+    <string name="ex4">Heavy lifting</string>
+    <string name="ex5">Easy</string>
+    <string name="greeting2">This is your progress</string>
+    <string name="greeting1">Hello</string>
+    <string name="points_text">Points</string>
+    <string name="daysWorkedOut">Number of days worked out</string>
+    <string name="daysNotWorkedout">Unfinished Workouts</string>
+    <string name="bodyTypeButtonText">Check your body type</string>
+
+    <string name="reps">Reps</string>
+    <string name="sets">Sets</string>
+    <string name="finishWorkoutButtonText">Finish Workout</string>
+    <string name = "DoneButtonText">Done</string>
+
+    <string name="sb1">Bench Press</string>
+    <string name = "sb2"> Push Up</string>
+    <string name="sb3">Inclined Chest Press</string>
+    <string name="sb4">Declined chest press</string>
+    <string name="sb5">Dips</string>
+    <string name = "sb6">Dumbbell Chest Press</string>
+    <string name="sb7">Shoulder Bench Press</string>
+    <string name="exerciseAlertTitle">Are you sure you want to quit?</string>
+    <string name="exerciseAlertBody">Quitting without finishing workout will lower your score.</string>
+    <string name="Button2">Confirm</string>
+    <string name="Button1">Cancel</string>
+    <string name="userNameHeading">User name</string>
+    <string name="hoursActiveHeading">Hours Active</string>
+    <string name="ageHeading">Age</string>
+    <string name="profileAlertTitle">Are you sure you want to update your profile?</string>
+    <string name="profileAlertBody">Updating your profile may change your workout routine. Are you sure?</string>
+    <string name="ProfileScreenHeader">Profile</string>
+    <string name="warningText1Profile">Updating your profile may change</string>
+    <string name="warningText2Profile">your workout routine</string>
+    <string name="BodyTypeHeader">Body Type</string>
+    <string name="weightHeading">Weight</string>
+    <string name="heightHeader">Height</string>
+    <string name="canada">Canada</string>
+    <string name="usa">USA</string>
+    <string name="Myanmar">Myanmar</string>
+    <string name="liberia">Liberia</string>
+    <string name="pounds">Pounds</string>
+    <string name="kilograms">Kilograms</string>
+    <string name="Foot">Foot</string>
+    <string name="meters">meters</string>
+    <string name="underWeightMsg">You are currently underweight.</string>
+    <string name="healthyMsg">You are currently healthy!</string>
+    <string name="overWeightMsg">You are currently overweight!</string>
+
+
+</resources>

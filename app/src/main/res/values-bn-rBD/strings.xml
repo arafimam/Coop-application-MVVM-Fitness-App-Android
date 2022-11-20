@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Coop Project</string>
+    <string name="home_navigation">ওভারভিউ</string>
+    <string name="Insights_navigation">অন্তর্দৃষ্টি</string>
+    <string name="Profile_navigation">প্রোফাইল</string>
+    <string name="hour_option_1">\ ঘন্টা \</string>
+    <string name="hour_option_2"> \ ঘন্টা \ </string>
+    <string name="minute_option">\ মিনিট \</string>
+    <string name="start_exercising">ব্যায়াম শুরু</string>
+
+    <string name="day1">রবিবার</string>
+    <string name="day2">সোমবার</string>
+    <string name="day3">মঙ্গলবার</string>
+    <string name="day4">বুধবার</string>
+    <string name="day5">শুক্রবার</string>
+    <string name="day6">শনিবার</string>
+    <string name="day7">বৃহস্পতিবার</string>
+
+    <string name="ex1">বুকের ব্যায়াম</string>
+    <string name="ex2">Leg day</string>
+    <string name="ex3">পায়ের ব্যায়াম</string>
+    <string name="ex4">ভারী উত্তোলন</string>
+    <string name="ex5">সহজ</string>
+
+    <string name="greeting2">এই আপনার অগ্রগতি</string>
+    <string name="greeting1">হ্যালো</string>
+    <string name="points_text">পয়েন্ট</string>
+    <string name="daysWorkedOut">ব্যায়াম করা দিনের সংখ্যা</string>
+    <string name="daysNotWorkedout">অসমাপ্ত ওয়ার্কআউট</string>
+    <string name="bodyTypeButtonText">আপনার শরীরের ধরন পরীক্ষা করুন</string>
+
+    <string name="reps">পুনরাবৃত্তি</string>
+    <string name="sets">সেট</string>
+    <string name="finishWorkoutButtonText">ব্যায়াম শেষ করুন</string>
+    <string name = "DoneButtonText">সম্পন্ন</string>
+
+    <string name="sb1">বেঞ্চ প্রেস</string>
+    <string name = "sb2"> পুশ আপ</string>
+    <string name="sb3">আনত বুক প্রেস</string>
+    <string name="sb4">বুক চাপা প্রত্যাখ্যান</string>
+    <string name="sb5">ডিপস</string>
+    <string name = "sb6">ডাম্বেল চেস্ট প্রেস</string>
+    <string name="sb7">শোল্ডার বেঞ্চ প্রেস</string>
+
+    <string name="exerciseAlertTitle">আপনি কি নিশ্চিত যে আপনি পরিত্যাগ করতে চান?</string>
+    <string name="exerciseAlertBody">ওয়ার্কআউট শেষ না করে ছেড়ে দিলে আপনার স্কোর কম হবে।</string>
+    <string name="Button2">নিশ্চিত করুন</string>
+    <string name="Button1">বাতিল করুন</string>
+
+    <string name="userNameHeading">ব্যবহারকারীর নাম</string>
+    <string name="hoursActiveHeading">সক্রিয় ঘন্টা</string>
+
+    <string name="ageHeading">বয়স</string>
+
+    <string name="profileAlertTitle">আপনি কি আপনার প্রোফাইল আপডেট করার বিষয়ে নিশ্চিত?</string>
+    <string name="profileAlertBody">আপনার প্রোফাইল আপডেট করা আপনার ওয়ার্কআউট রুটিন পরিবর্তন করতে পারে। তুমি কি নিশ্চিত?</string>
+    <string name="ProfileScreenHeader">প্রোফাইল</string>
+    <string name="warningText1Profile">আপনার প্রোফাইল আপডেট করা </string>
+    <string name="warningText2Profile">আপনার ওয়ার্কআউট রুটিন পরিবর্তন করতে পারে</string>
+
+    <string name="BodyTypeHeader">শারীরিক প্রকার</string>
+    <string name="weightHeading">ওজন</string>
+    <string name="heightHeader">উচ্চতা</string>
+
+    <string name="canada">কানাডা</string>
+    <string name="usa">আমেরিকা</string>
+    <string name="Myanmar">মায়ানমার</string>
+    <string name="liberia">লাইবেরিয়া</string>
+
+    <string name="pounds">পাউন্ড</string>
+    <string name="kilograms">কিলোগ্রাম</string>
+    <string name="Foot">ইঞ্চি</string>
+    <string name="meters">মিটার</string>
+
+    <string name="underWeightMsg">বর্তমানে আপনার ওজন কম</string>
+    <string name="healthyMsg">আপনি বর্তমানে সুস্থ!</string>
+    <string name="overWeightMsg">আপনি বর্তমানে অতিরিক্ত ওজন!</string>
+
+
+</resources>
