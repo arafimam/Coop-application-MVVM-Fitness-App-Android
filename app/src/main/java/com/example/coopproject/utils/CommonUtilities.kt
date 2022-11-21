@@ -1,6 +1,7 @@
 package com.example.coopproject.utils
 
 import com.example.coopproject.R
+import com.example.coopproject.screens.SharedViewModel
 
 /**
  * Gets hours in the number of seconds.

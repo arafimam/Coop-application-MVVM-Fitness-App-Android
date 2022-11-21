@@ -9,17 +9,27 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.example.coopproject.MainActivity
 import com.example.coopproject.R
+import com.example.coopproject.screens.SharedViewModel
+import com.example.coopproject.ui.theme.AppBackGroundColor
+import com.example.coopproject.utils.calculateUserPoints
+import java.util.*
 
-class Alarm : BroadcastReceiver() {
+class NotificationAlarmReceiver : BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onReceive(context: Context?, intent: Intent?) {
         try{
-            showNotification(context,"Reminder","Exercise")
+            val calendar: Calendar = Calendar.getInstance()
+            showNotification(context,"Woohoo! It's ${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}." +
+                    " Get Ready!",
+                "Click here to start.")
         }catch (exception: Exception){
             Log.d("exceptionLog",exception.printStackTrace().toString())
         }
@@ -42,7 +52,6 @@ class Alarm : BroadcastReceiver() {
         }
         val resultIntent = Intent(context,MainActivity::class.java)
         val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
-
             // Add the intent, which inflates the back stack
             addNextIntentWithParentStack(resultIntent)
             // Get the PendingIntent containing the entire back stack
@@ -53,10 +62,12 @@ class Alarm : BroadcastReceiver() {
         val builder = NotificationCompat.Builder(context,channelId).
                 setContentTitle(title)
             .setContentText(description)
-            .setSmallIcon(R.drawable.ic_baseline_add_circle_24)
+            .setSmallIcon(R.drawable.ic_baseline_start_24)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setColor(ContextCompat.getColor(context, R.color.purple_200))
             .setContentIntent(resultPendingIntent)
 
         manager.notify(1,builder.build())
-
     }
 }

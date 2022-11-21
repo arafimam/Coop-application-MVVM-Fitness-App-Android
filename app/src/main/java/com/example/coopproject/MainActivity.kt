@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.example.coopproject.navigation.AppNavigation
-import com.example.coopproject.notifications.Alarm
+import com.example.coopproject.notifications.NotificationAlarmReceiver
 import com.example.coopproject.screens.SharedViewModel
 import com.example.coopproject.ui.theme.CoopProjectTheme
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -48,11 +48,6 @@ class MainActivity : ComponentActivity() {
                 {
                     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
                     fetchLocation()
-                    val calendar: Calendar = Calendar.getInstance()
-
-                    Log.d("Araf","Here")
-                    Log.d("Araf",calendar.get(Calendar.HOUR_OF_DAY).toString())
-                    Log.d("Araf",calendar.get(Calendar.MINUTE).toString())
                     setAlarm(context = LocalContext.current)
                     AppNavigation(sharedViewModel = sharedViewModel)
                 }
@@ -60,18 +55,24 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Sets the alarm.
+     */
     @SuppressLint("UnspecifiedImmutableFlag", "ShortAlarm")
     private fun setAlarm(context: Context){
         val calendar: Calendar = Calendar.getInstance()
         calendar.set(Calendar.HOUR_OF_DAY,17)
         calendar.set(Calendar.MINUTE,31)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, Alarm::class.java)
+        val intent = Intent(context, NotificationAlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(context,0,intent,PendingIntent.FLAG_CANCEL_CURRENT)
         //alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.timeInMillis,pendingIntent)
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.timeInMillis,10000,pendingIntent)
     }
 
+    /**
+     * Fetches current user location.
+     */
     private fun fetchLocation(){
         val task = fusedLocationProviderClient.lastLocation
         if (ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION)
