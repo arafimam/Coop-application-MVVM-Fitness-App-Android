@@ -46,6 +46,7 @@ fun DashboardScreen(
         },
         content = {
             Surface(
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(),
