@@ -21,6 +21,7 @@ import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
 import com.example.coopproject.ui.theme.*
 import com.example.coopproject.utils.*
+import java.util.*
 
 @Composable
 fun DashboardScreen(
@@ -56,6 +57,10 @@ fun DashboardScreen(
                             exerciseInformation = currentDayExerciseInfo,
                             onStartExerciseClicked =
                             {
+                                //update Notify hour time
+                                val calendar: Calendar = Calendar.getInstance()
+                                sharedViewModel.updateNotifyHourTime(newTime = calendar.get(Calendar.HOUR_OF_DAY),
+                                    userName = sharedViewModel.signedUpUser)
                                 navController.navigate(route = Screens.EXERCISES_SCREEN.name)
                             }
                         )

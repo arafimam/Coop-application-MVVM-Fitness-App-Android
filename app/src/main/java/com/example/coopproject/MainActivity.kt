@@ -18,6 +18,9 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
@@ -46,9 +49,15 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 )
                 {
+                    LaunchedEffect(key1 = true){
+                        sharedViewModel.getNotifyHourTime(sharedViewModel.signedUpUser)
+                    }
+                    val notifyTime by sharedViewModel.notifyTime.collectAsState()
                     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
                     fetchLocation()
-                    setAlarm(context = LocalContext.current)
+                    if (notifyTime!=null){
+                        setAlarm(context = LocalContext.current, timeHour = notifyTime!!)
+                    }
                     AppNavigation(sharedViewModel = sharedViewModel)
                 }
             }
@@ -59,15 +68,16 @@ class MainActivity : ComponentActivity() {
      * Sets the alarm.
      */
     @SuppressLint("UnspecifiedImmutableFlag", "ShortAlarm")
-    private fun setAlarm(context: Context){
+    private fun setAlarm(context: Context,timeHour: Int){
         val calendar: Calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY,17)
-        calendar.set(Calendar.MINUTE,31)
+        calendar.set(Calendar.HOUR_OF_DAY,timeHour)
+        calendar.set(Calendar.MINUTE,0) // default to 0.
+        calendar.set(Calendar.SECOND,0) // default to 0.
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, NotificationAlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(context,0,intent,PendingIntent.FLAG_CANCEL_CURRENT)
         //alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.timeInMillis,pendingIntent)
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.timeInMillis,10000,pendingIntent)
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.timeInMillis,AlarmManager.INTERVAL_DAY,pendingIntent)
     }
 
     /**

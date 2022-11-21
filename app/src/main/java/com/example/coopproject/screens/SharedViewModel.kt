@@ -43,6 +43,22 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
 
     var countryName = "Canada" // default is Canada
 
+    private val _notifyTime: MutableStateFlow<Int?> = MutableStateFlow(null)
+    val notifyTime : StateFlow<Int?> = _notifyTime
+
+    fun getNotifyHourTime (userName: String){
+        viewModelScope.launch {
+            repository.getNotifyHourTime(userName).collect {
+                _notifyTime.value = it
+            }
+        }
+    }
+
+    fun updateNotifyHourTime(newTime: Int, userName: String){
+        viewModelScope.launch (Dispatchers.IO) {
+            repository.updateNotifyHourTime(newTime,userName)
+        }
+    }
     /**
      * Get user information of @param name.
      */

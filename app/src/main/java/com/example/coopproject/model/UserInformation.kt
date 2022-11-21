@@ -12,5 +12,6 @@ data class UserInformation(
     val password: String,
     val gender: String,
     val age: Int,
-    val bodyType: String
+    val bodyType: String,
+    val notifyHourTime: Int = 8// the notify hour time of the user. Default time is 8 -> 8:00 AM as per Calendar Instance.
 )

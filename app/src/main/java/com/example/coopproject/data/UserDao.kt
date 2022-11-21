@@ -9,6 +9,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDao {
 
+    @Query("SELECT notifyHourTime FROM user_information_table Where userName = :userName")
+    fun getUserNotifyHourTime(userName: String) : Flow<Int>
+
+    @Query("UPDATE user_information_table SET notifyHourTime = :newTime Where userName = :userName")
+    fun updateNotifyHourTime(newTime: Int, userName: String)
+
     /**
      * Signs up with a user.
      */

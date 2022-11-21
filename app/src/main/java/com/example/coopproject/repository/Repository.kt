@@ -12,6 +12,11 @@ import javax.inject.Inject
 
 class Repository @Inject constructor(private val userDao: UserDao) {
 
+    fun getNotifyHourTime(userName: String) : Flow<Int> =
+        userDao.getUserNotifyHourTime(userName)
+
+    fun updateNotifyHourTime(newTime: Int, userName: String) =
+        userDao.updateNotifyHourTime(newTime,userName)
     /**
      * Signs up with a user.
      */

@@ -6,7 +6,7 @@ import com.example.coopproject.model.UserExerciseInformation
 import com.example.coopproject.model.UserInformation
 
 @Database(entities = [UserInformation :: class,UserExerciseInformation :: class],
-    version = 20, exportSchema = false)
+    version = 21, exportSchema = false)
 abstract class UserDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao;
 }

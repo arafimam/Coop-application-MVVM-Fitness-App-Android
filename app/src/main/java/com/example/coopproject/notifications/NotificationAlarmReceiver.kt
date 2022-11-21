@@ -9,19 +9,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.LaunchedEffect
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.coopproject.MainActivity
 import com.example.coopproject.R
-import com.example.coopproject.screens.SharedViewModel
-import com.example.coopproject.ui.theme.AppBackGroundColor
-import com.example.coopproject.utils.calculateUserPoints
 import java.util.*
 
-class NotificationAlarmReceiver : BroadcastReceiver() {
+class NotificationAlarmReceiver: BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onReceive(context: Context?, intent: Intent?) {
