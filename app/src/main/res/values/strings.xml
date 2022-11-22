@@ -76,6 +76,7 @@
     <string name="tgUnfinished">unfinished</string>
     <string name="cdBackButtonInsigtsScreen">Back Button.</string>
     <string name="cdForSubmit">Check body type. Double tap to activate.</string>
+    <string name="cdDoneButton">Done Button. Double tap to make changes.</string>
 
 
 </resources>

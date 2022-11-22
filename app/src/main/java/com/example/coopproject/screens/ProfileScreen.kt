@@ -358,6 +358,7 @@ fun ProfileScreenTopBar(
     onDoneClicked: () -> Unit
 )
 {
+    val contentDescriptionForDoneButton = stringResource(R.string.cdDoneButton)
     TopAppBar(
         backgroundColor = AppThemeColor,
         contentColor = Color.White
@@ -374,7 +375,7 @@ fun ProfileScreenTopBar(
                     style = MaterialTheme.typography.subtitle1,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
-                        .clickable { onDoneClicked() })
+                        .clickable { onDoneClicked() }.semantics { contentDescription = contentDescriptionForDoneButton })
             }
         }
     }

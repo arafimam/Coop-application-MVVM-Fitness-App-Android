@@ -32,8 +32,9 @@ class NotificationAlarmReceiver: BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun showNotification(context: Context?, title: String, description: String){
-        Log.d("Araf","Notification Triggered")
+        Log.d("Notification","Notification Triggered")
         val manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // TODO: refactor strings to constants.kt
         val channelName = "Reminder"
         val channelId = "Reminder Id"
 

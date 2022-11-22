@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class InsightScreenTest() : AndroidTestBase() {
 
-    @Test
+    @Test()
     fun verifyPointWheelShowsCorrectScore() {
         navigateToInsightsScreen()
         val finishedWorkout: Int = getNumberOfFinishedWorkout()
