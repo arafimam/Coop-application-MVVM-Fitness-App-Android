@@ -87,4 +87,11 @@ dependencies {
 
     //location Services
     implementation "com.google.android.gms:play-services-location:18.0.0"
+
+    // Test rules and transitive dependencies:
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+// Needed for createAndroidComposeRule, but not createComposeRule:
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
+
+    implementation "androidx.activity:activity-compose:1.0.0-beta01"
 }

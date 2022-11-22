@@ -66,6 +66,16 @@
     <string name="underWeightMsg">You are currently underweight.</string>
     <string name="healthyMsg">You are currently healthy!</string>
     <string name="overWeightMsg">You are currently overweight!</string>
+    <string name="contDescStartExerciseButton">Start Exercise Button. Double Tap to activate.</string>
+    <string name="cdForDashboardNav">Dashboard Navigation Button. Double tap to navigate to Dashboard Screen.</string>
+    <string name="cdinsightsScreenNav">Insights Navigation Button. Double tap to navigate to insights screen.</string>
+    <string name="cdProfileScreenNav">Profile Navigation. Double tap to navigate to profile screen.</string>
+    <string name="timerIcon">Icon showing a timer icon.</string>
+    <string name="checkBodyType">Check Body Type Button. Double Tap to navigate to check body type screen.</string>
+    <string name="tgFinished">finished</string>
+    <string name="tgUnfinished">unfinished</string>
+    <string name="cdBackButtonInsigtsScreen">Back Button.</string>
+    <string name="cdForSubmit">Check body type. Double tap to activate.</string>
 
 
 </resources>

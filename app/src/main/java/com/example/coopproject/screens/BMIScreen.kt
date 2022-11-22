@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -138,9 +140,10 @@ fun BMIScreenBottomBar(
         mutableStateOf(false)
     }
     if (showButton.value){
+        val contentDescriptionForCheckBodyTypeButton = stringResource(R.string.cdForSubmit)
         Button(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth().clearAndSetSemantics { contentDescription = contentDescriptionForCheckBodyTypeButton }
                 .padding(
                     start = BIG_PADDING,
                     end = BIG_PADDING,
@@ -153,15 +156,13 @@ fun BMIScreenBottomBar(
             },
             colors = ButtonDefaults.buttonColors(LighterAppThemeColor),
             shape = RoundedCornerShape(PADDING_NORMAL), elevation = ButtonDefaults.elevation(PADDING_NORMAL)) {
-            Row {
                 Text(
-                    text = "Checkbody type",
+                    text = "Check body type",
                     color = Color.White,
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier.weight(5f)
                 )
 
-            }
         }
     }
 

@@ -15,6 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.example.coopproject.R
@@ -84,15 +88,17 @@ private fun InfoForDashboard(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+
         if (exerciseInformation != null){
             if (exerciseInformation.day!= null && exerciseInformation.exerciseType != null){
-
+                val contentDescriptionForExerciseType = stringResource(id = getExerciseMap()[exerciseInformation.exerciseType!!]!!)
                 // UI For displaying exercise type.
                 Text(
                     text = stringResource(id = getExerciseMap()[exerciseInformation.exerciseType!!]!!),
                     style = MaterialTheme.typography.h4,
                     color = Color.White, fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(bottom = PADDING_MEDIUM)
+                    modifier = Modifier.padding(bottom = PADDING_MEDIUM).clearAndSetSemantics {
+                        contentDescription = contentDescriptionForExerciseType }
                 )
 
                 // UI for displaying total time information.
@@ -101,14 +107,17 @@ private fun InfoForDashboard(
                 val minutes: Int = getMinutes(totalTime*60)
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_access_time_24),
-                    contentDescription = "Timer icon",
+                    contentDescription = stringResource(R.string.timerIcon),
                     tint = LighterAppThemeColor,
                     modifier = Modifier.padding(bottom = PADDING_SMALL)
                 )
+                val contentDescriptionForTime = "$hours hours and $minutes minutes"
                 TimeRepresentation(
                     hours = hours,
                     minutes = minutes,
-                    modifier = Modifier.padding(bottom = PADDING_MEDIUM)
+                    modifier = Modifier.padding(bottom = PADDING_MEDIUM).clearAndSetSemantics {
+                        contentDescription = contentDescriptionForTime
+                    }
                 )
 
                 //Horizontal line UI.
@@ -130,8 +139,12 @@ private fun InfoForDashboard(
 private fun StartExerciseButton(
     onStartExerciseClicked: () -> Unit
 ){
+    val contentDescriptionsForStartExerciseButton = stringResource(id = R.string.contDescStartExerciseButton)
     Button(
         modifier = Modifier
+            .clearAndSetSemantics {
+                contentDescription = contentDescriptionsForStartExerciseButton
+            }
             .fillMaxWidth()
             .padding(start = BIG_PADDING, end = BIG_PADDING, top = TOP_PADDING_LARGE),
         onClick = { onStartExerciseClicked() },
@@ -188,9 +201,12 @@ private fun BottomBar(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = AppThemeColor,
     ) {
-
+        val contentDescriptionsForDashboardNavigation: String = stringResource(R.string.cdForDashboardNav)
+        val contentDescriptionForInsightsNavigation: String = stringResource(R.string.cdinsightsScreenNav)
+        val contentDescriptionForProfileNavigation: String = stringResource(R.string.cdProfileScreenNav)
         // Navigation options.
         BottomNavigationItem(
+            modifier = Modifier.clearAndSetSemantics { contentDescription = contentDescriptionsForDashboardNavigation },
             selected = selectedIndex.value == 0,
             onClick = {
                       selectedIndex.value = 0
@@ -201,6 +217,7 @@ private fun BottomBar(
         )
 
         BottomNavigationItem(
+            modifier = Modifier.clearAndSetSemantics { contentDescription = contentDescriptionForInsightsNavigation },
             selected = selectedIndex.value == 1,
             onClick = {
                 selectedIndex.value = 1;
@@ -211,6 +228,7 @@ private fun BottomBar(
         )
 
         BottomNavigationItem(
+            modifier = Modifier.clearAndSetSemantics { contentDescription = contentDescriptionForProfileNavigation },
             selected = selectedIndex.value == 2,
             onClick = {
                 selectedIndex.value = 2;
@@ -226,13 +244,19 @@ private fun BottomBar(
 private fun TopBar(
     exerciseInformation: ExerciseInformation?
 ){
+
     if (exerciseInformation != null){
         if (exerciseInformation.day!= null){
             TopAppBar(
                 title = { Box(modifier = Modifier.fillMaxWidth()){
                     if (exerciseInformation.day != null){
+                        val contentDescriptionForDay = stringResource(id = getDayMap()[exerciseInformation.day!!]!!)
                         Text(text = stringResource(id = getDayMap()[exerciseInformation.day!!]!!), color = Color.White,
-                            modifier = Modifier.align(Alignment.Center))
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .semantics {
+                                    contentDescription = contentDescriptionForDay
+                                })
                     }
                 }},
                 backgroundColor = AppThemeColor)

@@ -1,5 +1,6 @@
 package com.example.coopproject.screens
 
+import android.nfc.Tag
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -19,8 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -70,8 +76,10 @@ private fun BodyTypeButton(
     onBodyTypeButtonClicked: () -> Unit
 )
 {
+    val contentDescriptionForBodyTypeButton = stringResource(R.string.checkBodyType)
     Button(
         modifier = Modifier
+            .clearAndSetSemantics { contentDescription =  contentDescriptionForBodyTypeButton}
             .fillMaxWidth()
             .padding(start = BIG_PADDING, end = BIG_PADDING, top = PADDING_NORMAL),
         onClick = { onBodyTypeButtonClicked() },
@@ -107,8 +115,12 @@ fun WorkoutInformation(
     backgroundColor = CardColor,
     shape = RoundedCornerShape(15.dp)) {
         Column() {
-            WorkoutTextInfo(info = stringResource(R.string.daysWorkedOut), value = finishWorkout!!)
-            WorkoutTextInfo(info = stringResource(R.string.daysNotWorkedout), value = unfinishedWorkout!!)
+            WorkoutTextInfo(info = stringResource(R.string.daysWorkedOut), value = finishWorkout!!, tagName = stringResource(
+                            R.string.tgFinished)
+                        )
+            WorkoutTextInfo(info = stringResource(R.string.daysNotWorkedout), value = unfinishedWorkout!!, tagName = stringResource(
+                            R.string.tgUnfinished)
+                        )
         }
         
     }
@@ -118,14 +130,16 @@ fun WorkoutInformation(
 @Composable
 private fun WorkoutTextInfo(
     info: String,
-    value: Int
+    value: Int,
+    tagName: String
 )
 {
+
     Box(modifier = Modifier.padding(top = 30.dp),
     contentAlignment = Alignment.Center){
         Row(modifier = Modifier.padding(start = PADDING_NORMAL, end = PADDING_NORMAL)){
             Text(text = "$info", modifier = Modifier
-                .weight(7f),
+                .weight(7f).semantics { contentDescription = "$info" },
                 color = Color.White,
                 style = MaterialTheme.typography.body1)
             Card(
@@ -137,7 +151,9 @@ private fun WorkoutTextInfo(
                 shape = RoundedCornerShape(15.dp)
             ){
                 Box(contentAlignment = Alignment.Center){
-                    Text(text = String.format("%d",value),style = MaterialTheme.typography.body1)
+                    Text(text = String.format("%d",value),style = MaterialTheme.typography.body1,
+                        modifier = Modifier.semantics { testTag = tagName;
+                        contentDescription = "$value"})
                 }
             }
         }
@@ -153,7 +169,9 @@ private fun WelcomeText(
 {
     // Welcome Text: Hello <username> 'hand_wave' \n This is your progress
     if (userName!= null){
-        Column(modifier = Modifier.padding(top = BIG_PADDING, start = BIG_PADDING)) {
+        Column(modifier = Modifier.padding(top = BIG_PADDING, start = BIG_PADDING).clearAndSetSemantics {
+            contentDescription = "Hello $userName, This is Your Progress."
+        }) {
             Row(modifier = Modifier.padding(bottom = SMALL_THICKNESS)) {
                 Text(text = "${stringResource(id = R.string.greeting1)} $userName, ",
                     color = Color.White,
@@ -186,9 +204,18 @@ private fun PointsWheel(
     )
     {
         val totalScore: String = String.format("%d",5)
+        val contentDescriptionForPointsWheel = "Your Point is ${calculateUserPoints(
+                finishedNumber = finishWorkout,
+                unfinishedNumber = unfinishedWorkout
+            )
+        } out of $totalScore"
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.clearAndSetSemantics {
+                testTag = "PointsWheel"
+                contentDescription = contentDescriptionForPointsWheel
+            }
         )
         {
             CustomizedProgressWheel(
@@ -266,7 +293,7 @@ private fun TopBarInsightScreen(
         content = {
             IconButton(onClick = { onBackClicked() }) {
                 Icon(imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Back Button.",
+                    contentDescription = stringResource(R.string.cdBackButtonInsigtsScreen),
                 tint = Color.White)
             }
         }
