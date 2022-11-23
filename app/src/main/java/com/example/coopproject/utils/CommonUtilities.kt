@@ -70,7 +70,7 @@ fun calculateUserPercentage(finishedNumber: Int?, unfinishedNumber: Int?): Float
  * @param height Int
  * @return Double
  */
-fun calculateBMI (Weight: Int,height: Float): Double{
+fun calculateBMI (Weight: Float,height: Float): Double{
     return (Weight.toDouble()/(height.toDouble()*height.toDouble()))*10000
 }
 
@@ -83,7 +83,7 @@ fun calculateBMI (Weight: Int,height: Float): Double{
  * @return Double
  */
 fun calculateBMIHelper(weightValue: String, heightValue: String, weightUnit: String,heightUnit: String): Double{
-    var weightVal = weightValue.toInt()
+    var weightVal = weightValue.toFloat()
     var heightVal = heightValue.toFloat()
     if (weightUnit == "Pounds"){
         weightVal /= 2

@@ -61,8 +61,8 @@
     <string name="liberia">Liberia</string>
     <string name="pounds">Pounds</string>
     <string name="kilograms">Kilograms</string>
-    <string name="Foot">Foot</string>
-    <string name="meters">meters</string>
+    <string name="Foot">Feet</string>
+    <string name="meters">Meters</string>
     <string name="underWeightMsg">You are currently underweight.</string>
     <string name="healthyMsg">You are currently healthy!</string>
     <string name="overWeightMsg">You are currently overweight!</string>

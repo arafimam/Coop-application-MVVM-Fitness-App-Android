@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
@@ -255,31 +256,33 @@ fun DoneButton(
 }
 
 @Composable
-fun WeightCheckBox(
+fun UnitWidget(
+    modifier: Modifier = Modifier,
     sharedViewModel: SharedViewModel,
-    getSelectedUnit: (String) -> Unit
+    getUnitSelected: (String) -> Unit
 ){
-
     var expanded = remember {
         mutableStateOf(false)
     }
-    // check country name.
+
+    var selectedIndex = remember {
+        mutableStateOf(0)
+    }
+
     val nonMetricCountries: List<String> = listOf(stringResource(R.string.canada),
         stringResource(R.string.usa), stringResource(R.string.Myanmar), stringResource(R.string.liberia)
     )
     var items: List<String> = if (nonMetricCountries.contains(sharedViewModel.countryName)){
-        listOf(stringResource(R.string.pounds), stringResource(R.string.kilograms))
+        listOf("Imperial Units","Metric Units")
+
     }
     else{
-        listOf(stringResource(R.string.kilograms),stringResource(R.string.pounds))
+        listOf("Metric Units", "Imperial Units")
     }
 
-    var selectedIndex = remember {
-        mutableStateOf(0)
-    }
-    getSelectedUnit(items[selectedIndex.value])
+    getUnitSelected(items[selectedIndex.value])
 
-    Box(modifier = Modifier.clickable { expanded.value = true }){
+    Box(modifier = Modifier.clickable { expanded.value = true }.fillMaxWidth().padding(top = PADDING_MEDIUM), contentAlignment = Alignment.Center){
         Row(verticalAlignment = Alignment.CenterVertically){
             Text(items[selectedIndex.value], color = Color.White)
             Icon(painter = painterResource(id = R.drawable.ic_baseline_arrow_drop_down_24), contentDescription = "Drop Down Button.",
@@ -287,6 +290,7 @@ fun WeightCheckBox(
         }
 
         DropdownMenu(
+            modifier = Modifier.align(Alignment.Center).fillMaxWidth(),
             expanded = expanded.value,
             onDismissRequest = { expanded.value = false }) {
 
@@ -301,55 +305,95 @@ fun WeightCheckBox(
 
         }
     }
+
+
 }
-
 @Composable
-fun HeightCheckBox(
-    sharedViewModel: SharedViewModel,
-    getHeightUnit: (String) -> Unit
+fun ParameterWidget(
+    parameterType: String,
+    parameterUnit: String,
+    getParameterValue: (Float) -> Unit,
+    parameterDefaultValue: Float,
+    parameterMinValue: Float,
+    parameterMaxValue: Float
 ){
-
-    var expanded = remember {
-        mutableStateOf(false)
+    val parameterValue = remember{
+        mutableStateOf(parameterDefaultValue)
     }
-    // check country name.
-    val nonMetricCountries: List<String> = listOf(stringResource(R.string.canada),
-            stringResource(R.string.usa), stringResource(R.string.Myanmar), stringResource(R.string.liberia)
-                )
-    var items: List<String> = if (nonMetricCountries.contains(sharedViewModel.countryName)){
-        listOf(stringResource(R.string.Foot), stringResource(R.string.meters))
-    }
-    else{
-        listOf(stringResource(R.string.meters),stringResource(R.string.Foot))
+    getParameterValue(parameterValue.value)
+    if (parameterValue.value > parameterMaxValue){
+        Toast.makeText(LocalContext.current,"$parameterType cannot be more than $parameterMaxValue",Toast.LENGTH_SHORT).show()
+        parameterValue.value = parameterDefaultValue
     }
 
-    var selectedIndex = remember {
-        mutableStateOf(0)
+    if (parameterValue.value < 0){
+        Toast.makeText(LocalContext.current,"$parameterType cannot be less than 0.",Toast.LENGTH_SHORT).show()
+        parameterValue.value = parameterDefaultValue
+
     }
-    getHeightUnit(items[selectedIndex.value])
 
-    Box(modifier = Modifier.clickable { expanded.value = true }){
-        Row(verticalAlignment = Alignment.CenterVertically){
-            Text(items[selectedIndex.value], color = Color.White)
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_arrow_drop_down_24), contentDescription = "Drop Down Button.",
-                tint = Color.White)
-        }
+    Card(
+        backgroundColor = CardColor,
+        modifier = Modifier
+            .padding(
+                start = BIG_PADDING, end = BIG_PADDING
+            )
+            .fillMaxWidth()
+            .height(175.dp),
+        shape = RoundedCornerShape(15.dp),
 
-        DropdownMenu(
-            expanded = expanded.value,
-            onDismissRequest = { expanded.value = false }) {
+        ){
+        Column(
+            modifier = Modifier.padding(top = PADDING_MEDIUM),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(text = parameterType, color = Color.White,
+                style = MaterialTheme.typography.h4)
+            Text(text = parameterUnit, color = FadedTextColor,
+                style = MaterialTheme.typography.body1,
+                fontWeight = FontWeight.Bold
+            )
 
-            items.forEachIndexed{index,s ->
-                DropdownMenuItem(onClick = {
-                    selectedIndex.value = index
-                    expanded.value = false
-                }) {
-                    Text(text = s)
+            Row(
+                modifier = Modifier.padding(top = PADDING_SMALL)
+            ) {
+                IconButton(onClick = {
+                    parameterValue.value = parameterValue.value - 1
+                },
+                    enabled = parameterValue.value > parameterMinValue
+                ) {
+                    Icon(painter = painterResource(id = R.drawable.ic_baseline_remove_circle_24),
+                        contentDescription = "Subtract value icon.",
+                        tint = Color.White, modifier = Modifier.size(45.dp))
                 }
-            }
 
+                AppInputNumberField(text = String.format("%.1f",parameterValue.value), label = "", onTextChange = {
+                    if (it != ""){
+                        parameterValue.value = it.toFloat()
+                    }
+                },
+                    modifier = Modifier.width(80.dp),
+                    textColor = Color.White
+                )
+                //Text(text = weightValue.value.toString(),color = Color.White, style = MaterialTheme.typography.h4,)
+
+                IconButton(onClick = {
+                    parameterValue.value = parameterValue.value + 1
+                },
+                    enabled = parameterValue.value < parameterMaxValue
+                ) {
+                    Icon(painter = painterResource(id = R.drawable.ic_baseline_add_circle_24),
+                        contentDescription = "Add value icon.",
+                        tint = Color.White,modifier = Modifier.size(45.dp))
+                }
+
+
+            }
         }
+
     }
+
 }
 
 @Preview(showBackground = true)

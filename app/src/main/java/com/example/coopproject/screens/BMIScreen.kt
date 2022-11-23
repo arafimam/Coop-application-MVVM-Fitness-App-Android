@@ -1,6 +1,7 @@
 package com.example.coopproject.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -12,19 +13,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
-import com.example.coopproject.screens.screenComponents.AppInputNumberField
-import com.example.coopproject.screens.screenComponents.AppInputTextField
-import com.example.coopproject.screens.screenComponents.HeightCheckBox
-import com.example.coopproject.screens.screenComponents.WeightCheckBox
+import com.example.coopproject.screens.screenComponents.*
 import com.example.coopproject.ui.theme.*
 import com.example.coopproject.utils.*
 import java.util.*
@@ -33,7 +33,7 @@ import java.util.*
 fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
 
     val weight = remember {
-        mutableStateOf(70)
+        mutableStateOf(70f)
     }
     val weightUnit = remember {
         mutableStateOf("")
@@ -45,8 +45,12 @@ fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
         mutableStateOf("")
     }
 
+    val unitSystem = remember {
+        mutableStateOf("")
+    }
 
-    val BMI: Double = calculateBMIHelper(String.format(Locale.ENGLISH,"%d",weight.value),
+
+    val BMI: Double = calculateBMIHelper(String.format(Locale.ENGLISH,"%f",weight.value),
     String.format(Locale.ENGLISH,"%f",height.value), weightUnit = weightUnit.value, heightUnit = heightUnit.value)
         //calculateBMIHelperFunction(weight, height, weightUnit = weightUnit.value, heightUnit = heightUnit.value)
 
@@ -65,44 +69,54 @@ fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
           )
           {
               Column(
-
+                horizontalAlignment = Alignment.CenterHorizontally
               ){
+
+                  UnitWidget(sharedViewModel = sharedViewModel, getUnitSelected = {
+                      unitSystem.value = it
+                      if (unitSystem.value == "Imperial Units"){
+                          weightUnit.value = "Pounds"
+                          heightUnit.value = "Foot"
+                      }else{
+                          weightUnit.value = "Kilograms"
+                          heightUnit.value = "meters"
+                      }
+                  })
                   Divider(color = LighterAppThemeColor,
                       thickness = SMALL_THICKNESS,
-                      modifier = Modifier.padding(top = PADDING_MEDIUM, bottom = PADDING_MEDIUM,
+                      modifier = Modifier.padding(top = PADDING_SMALL, bottom = PADDING_SMALL,
                           start = BIG_PADDING, end = BIG_PADDING) )
-                  WeightWidget(getWeightValue = {
-                      weight.value = it
-                  }, sharedViewModel = sharedViewModel,
-                  getWeightUnit = {
-                      if (it == "পাউন্ড" || it == "কিলোগ্রাম"){
-                          if (it == "পাউন্ড"){
-                              weightUnit.value = "Pounds"
-                          }
-                          else {
-                              weightUnit.value = "Kilograms"
-                          }
-                      }
-                  }
+                  ParameterWidget(
+                      parameterType = stringResource(id = R.string.weightHeading),
+                      parameterUnit = if (unitSystem.value == "Metric Units"){
+                          stringResource(id = R.string.kilograms)} else {
+                          stringResource(id = R.string.pounds)},
+                      getParameterValue = {weight.value = it},
+                      parameterDefaultValue = 100f,
+                      parameterMinValue = if (unitSystem.value == "Metric Units"){20f} else {45f},
+                      parameterMaxValue = if (unitSystem.value == "Metric Units"){250f} else {550f}
                   )
                   Divider(color = LighterAppThemeColor,
                       thickness = SMALL_THICKNESS,
-                      modifier = Modifier.padding(top = PADDING_MEDIUM, bottom = PADDING_MEDIUM,
+                      modifier = Modifier.padding(top = PADDING_SMALL, bottom = PADDING_SMALL,
                       start = BIG_PADDING, end = BIG_PADDING) )
-                  HeightWidget(getHeightValue = {height.value = it}, sharedViewModel = sharedViewModel,
-                      getHeightUnit = {
-                          if (it == "ইঞ্চি" || it == "মিটার"){
-                              if (it == "মিটার"){
-                                  heightUnit.value = "meters"
-                              }else{
-                                  heightUnit.value = "Foot"
-                              }
-                          }
-                      }
+                  ParameterWidget(
+                      parameterType = stringResource(id = R.string.heightHeader),
+                      parameterUnit = if (unitSystem.value == "Metric Units"){
+                          stringResource(id = R.string.meters)} else {
+                          stringResource(id = R.string.Foot)},
+                      getParameterValue = {height.value = it},
+                      parameterDefaultValue = 1.5f,
+                      parameterMinValue = if (unitSystem.value == "Metric Units"){
+                          1f} else {
+                          1f},
+                      parameterMaxValue =if (unitSystem.value == "Metric Units"){
+                          3f} else {
+                          20f}
                   )
                   Divider(color = LighterAppThemeColor,
                       thickness = SMALL_THICKNESS,
-                      modifier = Modifier.padding(top = PADDING_MEDIUM, bottom = PADDING_MEDIUM,
+                      modifier = Modifier.padding(top = PADDING_SMALL, bottom = PADDING_MEDIUM,
                           start = BIG_PADDING, end = BIG_PADDING) )
               }
 
@@ -114,6 +128,7 @@ fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
             val underWeightMessage = stringResource(R.string.underWeightMsg)
             val normalWeightMessage = stringResource(R.string.healthyMsg)
             val overWeightMessage = stringResource(R.string.overWeightMsg)
+
             if (BMI<18.5){
                 BMIScreenBottomBar(message = underWeightMessage)
             }
@@ -123,6 +138,8 @@ fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
             else{
                 BMIScreenBottomBar(message = overWeightMessage)
             }
+
+
         }
     )
 
@@ -143,7 +160,10 @@ fun BMIScreenBottomBar(
         val contentDescriptionForCheckBodyTypeButton = stringResource(R.string.cdForSubmit)
         Button(
             modifier = Modifier
-                .fillMaxWidth().clearAndSetSemantics { contentDescription = contentDescriptionForCheckBodyTypeButton }
+                .fillMaxWidth()
+                .clearAndSetSemantics {
+                    contentDescription = contentDescriptionForCheckBodyTypeButton
+                }
                 .padding(
                     start = BIG_PADDING,
                     end = BIG_PADDING,
@@ -219,136 +239,3 @@ fun BMIScreenTopBar(
 
     }
 }
-
-@Composable
-fun WeightWidget(
-    sharedViewModel: SharedViewModel,
-    getWeightValue : (Int) -> Unit,
-    getWeightUnit : (String) -> Unit
-){
-
-    val weightUnit = remember {
-        mutableStateOf("Pounds")
-    }
-    val weightValue = remember {
-        mutableStateOf(100)
-    }
-    getWeightValue(weightValue.value)
-    getWeightUnit(weightUnit.value)
-
-    Card(
-        backgroundColor = CardColor,
-        modifier = Modifier
-            .padding(
-                start = BIG_PADDING, end = BIG_PADDING
-            )
-            .fillMaxWidth()
-            .height(175.dp),
-        shape = RoundedCornerShape(15.dp),
-
-    ){
-        Column(
-            modifier = Modifier.padding(top = PADDING_MEDIUM),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = stringResource(R.string.weightHeading), color = Color.White,
-            style = MaterialTheme.typography.h4)
-            WeightCheckBox(sharedViewModel = sharedViewModel, getSelectedUnit = {
-                weightUnit.value = it
-            })
-
-            Row(
-                modifier = Modifier.padding(top = PADDING_SMALL)
-            ) {
-                IconButton(onClick = {
-                    weightValue.value = weightValue.value - 1
-                },
-                    enabled = weightValue.value > 30
-                ) {
-                    Icon(painter = painterResource(id = R.drawable.ic_baseline_remove_circle_24),
-                        contentDescription = "Subtract value icon.",
-                    tint = Color.White, modifier = Modifier.size(45.dp))
-
-                }
-
-                AppInputNumberField(text = String.format("%d",weightValue.value), label = "", onTextChange = {
-                    if (it != ""){
-                        weightValue.value = it.toInt()
-                    }
-                    else{
-                        weightValue.value = 0
-                    }
-                },
-                modifier = Modifier.width(80.dp),
-                    textColor = Color.White
-                )
-                //Text(text = weightValue.value.toString(),color = Color.White, style = MaterialTheme.typography.h4,)
-
-                IconButton(onClick = {
-                    weightValue.value = weightValue.value + 1
-                }) {
-                    Icon(painter = painterResource(id = R.drawable.ic_baseline_add_circle_24),
-                        contentDescription = "Add value icon.",
-                    tint = Color.White,modifier = Modifier.size(45.dp))
-                }
-
-
-            }
-        }
-
-    }
-
-}
-
-@Composable
-fun HeightWidget(
-    sharedViewModel: SharedViewModel,
-    getHeightValue: (Float) -> Unit,
-    getHeightUnit: (String) -> Unit
-){
-
-    val heightValue = remember {
-        mutableStateOf(1f)
-    }
-
-    val heightUnit = remember {
-        mutableStateOf("Feet")
-    }
-    getHeightValue(heightValue.value)
-    getHeightUnit(heightUnit.value)
-
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .height(150.dp)
-        .padding(start = PADDING_NORMAL, end = PADDING_NORMAL),
-        backgroundColor = CardColor,
-        shape = RoundedCornerShape(15.dp)){
-
-        Column(
-            modifier = Modifier.padding(top = PADDING_MEDIUM),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Text(text = stringResource(R.string.heightHeader), color = Color.White,
-                style = MaterialTheme.typography.h4)
-            Row(verticalAlignment = Alignment.CenterVertically){
-
-
-                Text(text = String.format("%.2f",heightValue.value.toDouble()), color = Color.White,
-                    style = MaterialTheme.typography.h4,modifier = Modifier.padding(end = PADDING_MEDIUM))
-
-
-                HeightCheckBox(sharedViewModel = sharedViewModel, getHeightUnit = {heightUnit.value = it})
-            }
-            Slider(value = heightValue.value, onValueChange = {
-                heightValue.value = it
-            }, valueRange = if (heightUnit.value == "meters") {0f..3f} else {2f..9f},
-                colors = SliderDefaults.colors(activeTrackColor = LighterAppThemeColor, thumbColor = SliderThumbColor, disabledActiveTrackColor = Color.Blue ),
-                modifier = Modifier.padding(start = PADDING_MEDIUM, end = PADDING_MEDIUM)
-                )
-        }
-
-    }
-}
-
