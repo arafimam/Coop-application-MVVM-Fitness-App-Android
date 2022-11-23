@@ -108,12 +108,13 @@ fun exerciseContent(
         LazyColumn(){
             items(currentDayExercise.exercises){
                 exercises ->
+
                 ExerciseRepresentation(
                     exerciseType = exercises.nameOfSubExercise!!,
                     reps = String.format("%d",exercises.reps),
                     sets = String.format("%d",exercises.sets) ,
                     image = getImageBasedOnExercise(exerciseName = exercises.nameOfSubExercise!!),
-                    finished = exercises.finished,
+                    finished = exercises.finished ,
                     onClickedDone = {
                         exercises.finished = true
                     }

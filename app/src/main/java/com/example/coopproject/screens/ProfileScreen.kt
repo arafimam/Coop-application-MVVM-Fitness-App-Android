@@ -3,6 +3,7 @@ package com.example.coopproject.screens
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,8 +19,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -238,10 +241,19 @@ fun ProfileScreenContent(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = PADDING_SMALL)
                 )
+                val contentDescriptionForUserName = "Current user name is ${username.value}. Double tap to Edit."
+                val testTagForUserNameTextField = "userName"
                 AppInputTextField(text = username.value, label = "User name", onTextChange = {
                     username.value = it
                     editMade.value = true
-                })
+                },
+                    modifier = Modifier
+                        .background(Color.White, RoundedCornerShape(5.dp))
+                        .clearAndSetSemantics {
+                            testTag = "userName"
+                                contentDescription = contentDescriptionForUserName
+                        }
+                )
                 Divider(color = LighterAppThemeColor,
                     thickness = SMALL_THICKNESS,
                     modifier = Modifier.padding(top = BIG_PADDING, bottom = BIG_PADDING) )
@@ -286,9 +298,11 @@ fun ProfileScreenContent(
                     color = Color.White,
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = PADDING_SMALL).semantics {
-                        contentDescription = contentDescriptionForAgeHeading
-                    }
+                    modifier = Modifier
+                        .padding(bottom = PADDING_SMALL)
+                        .semantics {
+                            contentDescription = contentDescriptionForAgeHeading
+                        }
                 )
 
                 val mContext = LocalContext.current
@@ -375,7 +389,8 @@ fun ProfileScreenTopBar(
                     style = MaterialTheme.typography.subtitle1,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
-                        .clickable { onDoneClicked() }.semantics { contentDescription = contentDescriptionForDoneButton })
+                        .clickable { onDoneClicked() }
+                        .semantics { contentDescription = contentDescriptionForDoneButton })
             }
         }
     }

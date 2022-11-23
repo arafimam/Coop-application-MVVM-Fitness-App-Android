@@ -1,5 +1,6 @@
 package com.example.coopproject.screens.screenComponents
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,12 +17,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.coopproject.R
 import com.example.coopproject.screens.SharedViewModel
@@ -42,7 +45,8 @@ fun AppInputTextField(
 ){
     val keyboardController = LocalSoftwareKeyboardController.current
     OutlinedTextField(
-        modifier = modifier.background(Color.White, RoundedCornerShape(5.dp)),
+        //modifier = modifier.background(Color.White, RoundedCornerShape(5.dp)),
+        modifier =  modifier,
         value = text,
         onValueChange = onTextChange,
         colors = TextFieldDefaults.textFieldColors(textColor = textColor, backgroundColor = bgColor,
@@ -100,8 +104,27 @@ fun ExerciseRepresentation(
     finished: Boolean,
     onClickedDone: () -> Unit
 ){
+
+
     val exerciseDoneState = remember{
         mutableStateOf(finished)
+    }
+
+    val imageState = remember {
+        mutableStateOf(
+            if (!exerciseDoneState.value){
+                image
+            }
+        else{
+            R.drawable.tickmark
+            }
+        )
+    }
+
+    val showExerciseData = remember{
+        mutableStateOf(
+            !exerciseDoneState.value
+        )
     }
 
     val colorOfCard = remember {
@@ -113,11 +136,23 @@ fun ExerciseRepresentation(
             }
         )
     }
+
+    val colorOfDivider = remember {
+        mutableStateOf(
+            if (!exerciseDoneState.value) {
+                FadedTextColor
+            }else{
+                IconColorForExerciseCard
+            }
+        )
+    }
+
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = PADDING_SMALL, end = PADDING_SMALL),
-        shape = RoundedCornerShape(8.dp), backgroundColor = colorOfCard.value
+        shape = RoundedCornerShape(15.dp), backgroundColor = colorOfCard.value
     ){
         Column(
             verticalArrangement = Arrangement.Top
@@ -125,9 +160,10 @@ fun ExerciseRepresentation(
 
             Row(verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(top = PADDING_SMALL, start = PADDING_SMALL, end = PADDING_SMALL)) {
-                Text(text = stringResource(id = getSubExerciseMap()[exerciseType]!!),color = Color.Black)
+                Text(text = stringResource(id = getSubExerciseMap()[exerciseType]!!),color = Color.Black,
+                modifier = Modifier.padding(end = PADDING_SMALL))
                 Divider(
-                    color = FadedTextColor,
+                    color = colorOfDivider.value,
                     thickness = SMALL_THICKNESS,
                 )
             }
@@ -137,29 +173,34 @@ fun ExerciseRepresentation(
                     .align(Alignment.CenterHorizontally),
                 verticalArrangement = Arrangement.Top,
             ) {
-                Column(modifier = Modifier.padding(start = 130.dp)){
+                if (showExerciseData.value){
+                    Row(modifier = Modifier.padding(start = 80.dp)){
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(painter = painterResource(id = R.drawable.ic_baseline_refresh_24),
-                            contentDescription = "Repetitions",
-                            tint = IconColorForExerciseCard)
-                        Text(text = "$reps ${stringResource(id = R.string.reps)}", color = Color.Black)
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(painter = painterResource(id = R.drawable.ic_baseline_donut_large_24),
-                            contentDescription = "Sets",
-                            tint = IconColorForExerciseCard)
-                        Text(text = "$sets ${stringResource(id = R.string.sets)}", color = Color.Black)
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(4f)) {
+                            Icon(painter = painterResource(id = R.drawable.ic_baseline_refresh_24),
+                                contentDescription = "Repetitions",
+                                tint = IconColorForExerciseCard)
+                            Text(text = "$reps ${stringResource(id = R.string.reps)}", color = Color.Black)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically,modifier = Modifier.weight(4f)) {
+                            Icon(painter = painterResource(id = R.drawable.ic_baseline_donut_large_24),
+                                contentDescription = "Sets",
+                                tint = IconColorForExerciseCard)
+                            Text(text = "$sets ${stringResource(id = R.string.sets)}", color = Color.Black)
+                        }
                     }
                 }
 
-
-                Image(painter = painterResource(id = image), contentDescription = "Pushup Image",
+                Image(painter = painterResource(id = imageState.value), contentDescription = "Pushup Image",
                 modifier = Modifier
-                    .clip(RoundedCornerShape(15.dp))
+                    .fillMaxWidth().height(200.dp)
                     .padding(all = PADDING_SMALL))
                 DoneButton(onDoneClicked = {
+                    imageState.value = R.drawable.tickmark
                     colorOfCard.value = FadedTextColor
+                    showExerciseData.value = false
+                    colorOfDivider.value = IconColorForExerciseCard
+                    Toast.makeText(context,"Completed $sets Sets of $exerciseType.",Toast.LENGTH_SHORT).show()
                     onClickedDone()
                 },
                     stateOfButton = exerciseDoneState.value
@@ -311,7 +352,13 @@ fun HeightCheckBox(
     }
 }
 
-
+@Preview(showBackground = true)
+@Composable
+private fun View(){
+    ExerciseRepresentation(exerciseType = "Push Up", reps = "3", sets = "4", image = R.drawable.inclinedchestpress,
+        finished = false) {
+    }
+}
 
 
 

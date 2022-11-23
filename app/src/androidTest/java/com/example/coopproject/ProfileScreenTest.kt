@@ -1,6 +1,6 @@
 package com.example.coopproject
 
-import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,6 +17,9 @@ class ProfileScreenTest: AndroidTestBase() {
 
     @Test
     fun verifyDoneButtonWhenUserNameChanged(){
-        // TODO:
+        navigateToProfileScreen()
+        val userNameTextField = composeTestRule.onNodeWithTag("userName")
+        userNameTextField.performTextReplacement("Dummy user")
+        //userNameTextField.performTextInput("Dummy User")
     }
 }
