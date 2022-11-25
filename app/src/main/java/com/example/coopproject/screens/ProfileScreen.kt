@@ -19,10 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -149,8 +146,9 @@ private fun ProfileScreenAlertDialog(
 fun ProfileScreenBottomBar()
 {
 
+    val contentDescriptionForBottomAppBar = stringResource(R.string.warningText1Profile) +"."+ stringResource(R.string.warningText2Profile)
         Card(modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().clearAndSetSemantics { contentDescription = contentDescriptionForBottomAppBar }
             .height(125.dp),
         shape = RoundedCornerShape(topEnd = TOP_PADDING_LARGE, topStart = TOP_PADDING_LARGE),
         backgroundColor = AppThemeColor){
@@ -274,7 +272,15 @@ fun ProfileScreenContent(
                     .fillMaxWidth()
                     .padding(bottom = BIG_PADDING)) {
                       itemsForBodyType.forEach{
-                          Row(modifier = Modifier.weight(6f)){
+                          Row(modifier = Modifier.weight(6f).clearAndSetSemantics {
+                              contentDescription = "Radio Button option for $it hours."
+                              stateDescription = if (activityToBodyType[selectedValue.value] == it){"Radio Button for ${it} hours is Selected."} else{"Radio Button for ${it} hours not selected."}
+                          }.clickable {
+                              selectedValue.value = bodyTypeToActivity[it]!!
+                              if (it!=userInfo.bodyType){
+                                  editMade.value = true
+                              }
+                          }){
                               RadioButton(
                                   modifier = Modifier.padding(end = 5.dp),
                                   selected = activityToBodyType[selectedValue.value] == it,
@@ -330,7 +336,9 @@ fun ProfileScreenContent(
 
                 Card(modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp)
+                    .height(55.dp).clearAndSetSemantics {
+                        contentDescription = "Current age is ${age.value}. Double tap to set of date of birth."
+                    }
                     .clickable {
                         mDatePickerDialog.show()
                         editMade.value = true
@@ -364,7 +372,6 @@ fun ProfileScreenContent(
     }
 }
 
-
 @Composable
 fun ProfileScreenTopBar(
     showDoneButton: Boolean,
@@ -378,8 +385,13 @@ fun ProfileScreenTopBar(
         contentColor = Color.White
     ) {
         Box(modifier = Modifier.fillMaxWidth()){
-            IconButton(onClick = { onBackClicked() }, modifier = Modifier.align(Alignment.CenterStart)) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back Button")
+            IconButton(onClick = { onBackClicked() },
+                modifier = Modifier.align(Alignment.CenterStart)
+                    .clearAndSetSemantics {
+                        contentDescription = "Back Button. Double Tap to navigate to Dashboard Screen."
+                    })
+            {
+                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back Button. Double Tap to navigate to Dashboard Screen.")
             }
 
             Text(text = stringResource(R.string.ProfileScreenHeader), style = MaterialTheme.typography.h6, modifier = Modifier.align(Alignment.Center))
@@ -390,7 +402,7 @@ fun ProfileScreenTopBar(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .clickable { onDoneClicked() }
-                        .semantics { contentDescription = contentDescriptionForDoneButton })
+                        .clearAndSetSemantics {  contentDescription = contentDescriptionForDoneButton })
             }
         }
     }

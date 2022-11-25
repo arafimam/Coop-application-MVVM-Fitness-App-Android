@@ -21,6 +21,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.example.coopproject.R
 import com.example.coopproject.screens.SharedViewModel
 import com.example.coopproject.ui.theme.*
+import com.example.coopproject.utils.getContentDescriptionOfImage
 import com.example.coopproject.utils.getSubExerciseMap
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -104,9 +108,8 @@ fun ExerciseRepresentation(
     image: Int,
     finished: Boolean,
     onClickedDone: () -> Unit
-){
-
-
+)
+{
     val exerciseDoneState = remember{
         mutableStateOf(finished)
     }
@@ -132,7 +135,8 @@ fun ExerciseRepresentation(
         mutableStateOf(
             if (!exerciseDoneState.value) {
                 ExerciseCardColor
-            }else{
+            }
+            else{
                 FadedTextColor
             }
         )
@@ -147,56 +151,114 @@ fun ExerciseRepresentation(
             }
         )
     }
+    val exName = stringResource(id = getSubExerciseMap()[exerciseType]!!)
+    val contentDescForExerciseDescWhenNotDone = "Exercise name is ${stringResource(id = getSubExerciseMap()[exerciseType]!!)}. Number of repetitions are $reps and number of sets are $sets."
+    val contentDescForExerciseDescWhenDone = "Completed $exName."
+
+    val contentDesc = remember {
+        mutableStateOf(
+            if (!exerciseDoneState.value){
+                contentDescForExerciseDescWhenNotDone
+            }else{
+                contentDescForExerciseDescWhenDone
+            }
+        )
+    }
+
+    val contentDescOfImage = remember {
+        mutableStateOf(
+            if (!exerciseDoneState.value){
+                getContentDescriptionOfImage(exName)
+            }else{
+                "Image showing a green tick."
+            }
+        )
+    }
+
+    val contentDescForDoneButton = remember {
+        mutableStateOf(
+            if (!exerciseDoneState.value){
+                "Finish exercise."
+            }else{
+                ""
+            }
+        )
+    }
+
+    val doneButtonDisability = remember {
+        mutableStateOf(!exerciseDoneState.value)
+    }
 
     val context = LocalContext.current
-    Card(
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = PADDING_SMALL, end = PADDING_SMALL),
-        shape = RoundedCornerShape(15.dp), backgroundColor = colorOfCard.value
+        shape = RoundedCornerShape(15.dp), color = colorOfCard.value
     ){
         Column(
             verticalArrangement = Arrangement.Top
-        ) {
+        )
+        {
 
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = PADDING_SMALL, start = PADDING_SMALL, end = PADDING_SMALL)) {
-                Text(text = stringResource(id = getSubExerciseMap()[exerciseType]!!),color = Color.Black,
-                modifier = Modifier.padding(end = PADDING_SMALL))
-                Divider(
-                    color = colorOfDivider.value,
-                    thickness = SMALL_THICKNESS,
-                )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth().semantics { contentDescription = contentDesc.value }
+            ){
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = PADDING_SMALL, start = PADDING_SMALL, end = PADDING_SMALL)) {
+                    Text(text = stringResource(id = getSubExerciseMap()[exerciseType]!!),color = Color.Black,
+                        modifier = Modifier.padding(end = PADDING_SMALL))
+                    Divider(
+                        color = colorOfDivider.value,
+                        thickness = SMALL_THICKNESS,
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .padding(top = BIG_PADDING),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    if (showExerciseData.value){
+                        Row(modifier = Modifier.padding(start = 80.dp)){
+
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(4f)) {
+                                Icon(painter = painterResource(id = R.drawable.ic_baseline_refresh_24),
+                                    contentDescription = "Repetitions",
+                                    tint = IconColorForExerciseCard)
+                                Text(text = "$reps ${stringResource(id = R.string.reps)}", color = Color.Black)
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically,modifier = Modifier.weight(4f)) {
+                                Icon(painter = painterResource(id = R.drawable.ic_baseline_donut_large_24),
+                                    contentDescription = "Sets",
+                                    tint = IconColorForExerciseCard)
+                                Text(text = "$sets ${stringResource(id = R.string.sets)}", color = Color.Black)
+                            }
+                        }
+                    }
+
+                }
+
             }
+
             Column(
                 modifier = Modifier
                     .padding(top = PADDING_SMALL)
                     .align(Alignment.CenterHorizontally),
                 verticalArrangement = Arrangement.Top,
-            ) {
-                if (showExerciseData.value){
-                    Row(modifier = Modifier.padding(start = 80.dp)){
-
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(4f)) {
-                            Icon(painter = painterResource(id = R.drawable.ic_baseline_refresh_24),
-                                contentDescription = "Repetitions",
-                                tint = IconColorForExerciseCard)
-                            Text(text = "$reps ${stringResource(id = R.string.reps)}", color = Color.Black)
-                        }
-                        Row(verticalAlignment = Alignment.CenterVertically,modifier = Modifier.weight(4f)) {
-                            Icon(painter = painterResource(id = R.drawable.ic_baseline_donut_large_24),
-                                contentDescription = "Sets",
-                                tint = IconColorForExerciseCard)
-                            Text(text = "$sets ${stringResource(id = R.string.sets)}", color = Color.Black)
-                        }
-                    }
-                }
-
-                Image(painter = painterResource(id = imageState.value), contentDescription = "Pushup Image",
+            )
+            {
+                Image(painter = painterResource(id = imageState.value), contentDescription = contentDescOfImage.value,
                 modifier = Modifier
-                    .fillMaxWidth().height(200.dp)
+                    .fillMaxWidth()
+                    .height(200.dp)
                     .padding(all = PADDING_SMALL))
                 DoneButton(onDoneClicked = {
+                    doneButtonDisability.value = false
+                    contentDescForDoneButton.value = ""
+                    contentDescOfImage.value = "Image showing a green tick."
+                    contentDesc.value = contentDescForExerciseDescWhenDone
                     imageState.value = R.drawable.tickmark
                     colorOfCard.value = FadedTextColor
                     showExerciseData.value = false
@@ -204,16 +266,20 @@ fun ExerciseRepresentation(
                     Toast.makeText(context,"Completed $sets Sets of $exerciseType.",Toast.LENGTH_SHORT).show()
                     onClickedDone()
                 },
-                    stateOfButton = exerciseDoneState.value
+                    stateOfButton = exerciseDoneState.value,
+                    contentDesc = contentDescForDoneButton.value,
+                    enable = doneButtonDisability.value
                 )
-            }
 
+            }
         }
     }
 }
 
 @Composable
 fun DoneButton(
+    enable: Boolean,
+    contentDesc: String,
     onDoneClicked: () -> Unit,
     stateOfButton: Boolean
     ){
@@ -230,7 +296,7 @@ fun DoneButton(
 
     Button(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().semantics { contentDescription = contentDesc }
             .padding(
                 start = BIG_PADDING,
                 end = BIG_PADDING,
@@ -243,6 +309,7 @@ fun DoneButton(
                   },
         colors = ButtonDefaults.buttonColors(colorOfButton.value),
         shape = RoundedCornerShape(PADDING_NORMAL), elevation = ButtonDefaults.elevation(PADDING_NORMAL),
+        enabled = enable
     ) {
         Box(){
             Text(
@@ -282,7 +349,10 @@ fun UnitWidget(
 
     getUnitSelected(items[selectedIndex.value])
 
-    Box(modifier = Modifier.clickable { expanded.value = true }.fillMaxWidth().padding(top = PADDING_MEDIUM), contentAlignment = Alignment.Center){
+    Box(modifier = Modifier
+        .clickable { expanded.value = true }
+        .fillMaxWidth()
+        .padding(top = PADDING_MEDIUM), contentAlignment = Alignment.Center){
         Row(verticalAlignment = Alignment.CenterVertically){
             Text(items[selectedIndex.value], color = Color.White)
             Icon(painter = painterResource(id = R.drawable.ic_baseline_arrow_drop_down_24), contentDescription = "Drop Down Button.",
@@ -290,7 +360,9 @@ fun UnitWidget(
         }
 
         DropdownMenu(
-            modifier = Modifier.align(Alignment.Center).fillMaxWidth(),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth(),
             expanded = expanded.value,
             onDismissRequest = { expanded.value = false }) {
 

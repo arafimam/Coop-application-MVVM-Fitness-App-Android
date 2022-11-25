@@ -79,26 +79,19 @@ private fun BodyTypeButton(
     val contentDescriptionForBodyTypeButton = stringResource(R.string.checkBodyType)
     Button(
         modifier = Modifier
-            .clearAndSetSemantics { contentDescription =  contentDescriptionForBodyTypeButton}
+            .clearAndSetSemantics { contentDescription = contentDescriptionForBodyTypeButton }
             .fillMaxWidth()
+            .height(55.dp)
             .padding(start = BIG_PADDING, end = BIG_PADDING, top = PADDING_NORMAL),
         onClick = { onBodyTypeButtonClicked() },
         colors = ButtonDefaults.buttonColors(LighterAppThemeColor),
         shape = RoundedCornerShape(PADDING_NORMAL), elevation = ButtonDefaults.elevation(PADDING_NORMAL)) {
-        Row {
             Text(
                 text = stringResource(R.string.bodyTypeButtonText),
                 color = Color.White,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.weight(5f)
+                style = MaterialTheme.typography.h6
             )
 
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = "Right Arrow Button.",
-                modifier = Modifier.weight(1f),
-                tint = Color.White)
-        }
     }
 }
 
@@ -108,10 +101,15 @@ fun WorkoutInformation(
     unfinishedWorkout: Int?
 )
 {
+    val contentDescriptionForWorkoutInformation = stringResource(id = R.string.daysWorkedOut) + "is $finishWorkout." +
+            stringResource(id = R.string.daysNotWorkedout) + "is $unfinishedWorkout."
     Card(modifier = Modifier
         .fillMaxWidth()
         .height(150.dp)
-        .padding(start = PADDING_NORMAL, end = PADDING_NORMAL, top = PADDING_NORMAL),
+        .padding(start = PADDING_NORMAL, end = PADDING_NORMAL, top = PADDING_NORMAL)
+        .clearAndSetSemantics {
+            contentDescription = contentDescriptionForWorkoutInformation
+        },
     backgroundColor = CardColor,
     shape = RoundedCornerShape(15.dp)) {
         Column() {
@@ -139,7 +137,8 @@ private fun WorkoutTextInfo(
     contentAlignment = Alignment.Center){
         Row(modifier = Modifier.padding(start = PADDING_NORMAL, end = PADDING_NORMAL)){
             Text(text = "$info", modifier = Modifier
-                .weight(7f).semantics { contentDescription = "$info" },
+                .weight(7f)
+                .semantics { contentDescription = "$info" },
                 color = Color.White,
                 style = MaterialTheme.typography.body1)
             Card(
@@ -169,9 +168,11 @@ private fun WelcomeText(
 {
     // Welcome Text: Hello <username> 'hand_wave' \n This is your progress
     if (userName!= null){
-        Column(modifier = Modifier.padding(top = BIG_PADDING, start = BIG_PADDING).clearAndSetSemantics {
-            contentDescription = "Hello $userName, This is Your Progress."
-        }) {
+        Column(modifier = Modifier.fillMaxWidth()
+            .padding(top = BIG_PADDING, start = BIG_PADDING)
+            .clearAndSetSemantics {
+                contentDescription = "Hello $userName, This is Your Progress."
+            }) {
             Row(modifier = Modifier.padding(bottom = SMALL_THICKNESS)) {
                 Text(text = "${stringResource(id = R.string.greeting1)} $userName, ",
                     color = Color.White,
@@ -195,27 +196,25 @@ private fun PointsWheel(
     unfinishedWorkout: Int?
 )
 {
+    val totalScore: String = String.format("%d",5)
+    val contentDescriptionForPointsWheel = "Your total Point is ${calculateUserPoints(
+        finishedNumber = finishWorkout,
+        unfinishedNumber = unfinishedWorkout
+    )
+    } out of $totalScore"
     Card(
         backgroundColor = CardColor,
-        modifier = Modifier.padding(top = PADDING_MEDIUM, start = BIG_PADDING, end = BIG_PADDING)
+        modifier = Modifier
+            .padding(top = PADDING_MEDIUM, start = BIG_PADDING, end = BIG_PADDING)
             .fillMaxWidth()
-            .height(200.dp),
+            .height(200.dp).clearAndSetSemantics { contentDescription = contentDescriptionForPointsWheel },
         shape = RoundedCornerShape(15.dp)
     )
     {
-        val totalScore: String = String.format("%d",5)
-        val contentDescriptionForPointsWheel = "Your Point is ${calculateUserPoints(
-                finishedNumber = finishWorkout,
-                unfinishedNumber = unfinishedWorkout
-            )
-        } out of $totalScore"
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.clearAndSetSemantics {
-                testTag = "PointsWheel"
-                contentDescription = contentDescriptionForPointsWheel
-            }
+            verticalArrangement = Arrangement.Center
         )
         {
             CustomizedProgressWheel(
@@ -291,7 +290,7 @@ private fun TopBarInsightScreen(
     TopAppBar(
         backgroundColor = AppThemeColor,
         content = {
-            IconButton(onClick = { onBackClicked() }) {
+            IconButton(onClick = { onBackClicked() }, modifier = Modifier.clearAndSetSemantics { contentDescription = "Back Button. Double Tap to navigate to Dashboard Screen." }) {
                 Icon(imageVector = Icons.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.cdBackButtonInsigtsScreen),
                 tint = Color.White)

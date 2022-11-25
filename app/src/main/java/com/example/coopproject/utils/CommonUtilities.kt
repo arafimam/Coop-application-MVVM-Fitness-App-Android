@@ -151,3 +151,28 @@ fun getSubExerciseMap(): Map<String,Int>{
     "Declined chest press" to R.string.sb4,"Dips" to R.string.sb5,"Dumbbell Chest Press" to R.string.sb6,"Shoulder Bench Press" to R.string.sb7
     )
 }
+
+fun getContentDescriptionOfImage(exerciseName: String): String{
+    return if (exerciseName == "Bench Press"){
+        "Image showing a person lying flat on a bench and gripping a bar with hands slightly wider than the shoulder width."
+    }
+    else if (exerciseName == "Push Up"){
+        "Image showing a person in push up form."
+    }
+    else if (exerciseName == "Inclined Chest Press"){
+        "Image showing a person lying in a inclined bench and gripping a bar with hands slightly wider than the shoulder width."
+    }
+    else if (exerciseName == "Declined chest press"){
+        "Image showing a person lying in a inclined bench and gripping a bar with hands slightly wider than the shoulder width."
+    }else if (exerciseName == "Dumbbell Chest Press"){
+        "Image showing a person lying flat on a bench and gripping a dumbbell with hands slightly wider than the shoulder width."
+    }
+    else if (exerciseName == "Dips"){
+        "Image showing a person giving dips."
+    }
+    else if (exerciseName == "Shoulder Bench Press"){
+        "Image showing a person giving shoulder bench press."
+    }else{
+        "Image showing a person exercising."
+    }
+}

@@ -20,6 +20,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.text
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
@@ -91,40 +92,56 @@ private fun InfoForDashboard(
 
         if (exerciseInformation != null){
             if (exerciseInformation.day!= null && exerciseInformation.exerciseType != null){
-                val contentDescriptionForExerciseType = stringResource(id = getExerciseMap()[exerciseInformation.exerciseType!!]!!)
-                // UI For displaying exercise type.
-                Text(
-                    text = stringResource(id = getExerciseMap()[exerciseInformation.exerciseType!!]!!),
-                    style = MaterialTheme.typography.h4,
-                    color = Color.White, fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(bottom = PADDING_MEDIUM).clearAndSetSemantics {
-                        contentDescription = contentDescriptionForExerciseType }
-                )
 
                 // UI for displaying total time information.
                 val totalTime: Double = getTotalTimeFromListOfSubExercise(exerciseInformation.exercises)
                 val hours: Int = getHours(totalTime*60)
                 val minutes: Int = getMinutes(totalTime*60)
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_access_time_24),
-                    contentDescription = stringResource(R.string.timerIcon),
-                    tint = LighterAppThemeColor,
-                    modifier = Modifier.padding(bottom = PADDING_SMALL)
-                )
                 val contentDescriptionForTime = "$hours hours and $minutes minutes"
-                TimeRepresentation(
-                    hours = hours,
-                    minutes = minutes,
-                    modifier = Modifier.padding(bottom = PADDING_MEDIUM).clearAndSetSemantics {
-                        contentDescription = contentDescriptionForTime
+                val contentDescriptionForExerciseType = "Exercise type for ${exerciseInformation.day} is ${stringResource(id = getExerciseMap()[exerciseInformation.exerciseType!!]!!)}."
+                Column(modifier = Modifier
+                    .clearAndSetSemantics {
+                        contentDescription = contentDescriptionForExerciseType + "Also, Total duration for exercise is" + contentDescriptionForTime
                     }
-                )
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally){
+
+                    // UI For displaying exercise type.
+
+                    Text(
+                        text = stringResource(id = getExerciseMap()[exerciseInformation.exerciseType!!]!!),
+                        style = MaterialTheme.typography.h4,
+                        color = Color.White, fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier
+                            .padding(bottom = PADDING_MEDIUM)
+                            .clearAndSetSemantics {
+                                contentDescription = contentDescriptionForExerciseType
+                            }
+
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_access_time_24),
+                        contentDescription = stringResource(R.string.timerIcon),
+                        tint = LighterAppThemeColor,
+                        modifier = Modifier.padding(bottom = PADDING_SMALL)
+                    )
+
+                    TimeRepresentation(
+                        hours = hours,
+                        minutes = minutes,
+                        modifier = Modifier
+                            .padding(bottom = PADDING_MEDIUM)
+                            .clearAndSetSemantics {
+                                contentDescription = contentDescriptionForTime
+                            }
+                    )
+                }
 
                 //Horizontal line UI.
                 Divider(
                     color = LighterAppThemeColor,
                     thickness = SMALL_THICKNESS,
-                    modifier = Modifier.padding(start = PADDING_MEDIUM, end = PADDING_MEDIUM)
+                    modifier = Modifier.padding(start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = TOP_PADDING_LARGE)
                 )
 
                 //Button
@@ -145,27 +162,18 @@ private fun StartExerciseButton(
             .clearAndSetSemantics {
                 contentDescription = contentDescriptionsForStartExerciseButton
             }
-            .fillMaxWidth()
-            .padding(start = BIG_PADDING, end = BIG_PADDING, top = TOP_PADDING_LARGE),
+            .fillMaxWidth().height(55.dp)
+            .padding(start = BIG_PADDING, end = BIG_PADDING),
         onClick = { onStartExerciseClicked() },
-        colors = ButtonDefaults.buttonColors(AppThemeColor),
+        colors = ButtonDefaults.buttonColors(LighterAppThemeColor),
         shape = RoundedCornerShape(PADDING_NORMAL), elevation = ButtonDefaults.elevation(PADDING_NORMAL)
     )
     {
-        Row {
             Text(
                 text = stringResource(R.string.start_exercising),
                 color = Color.White,
                 style = MaterialTheme.typography.h6,
-                modifier = Modifier.weight(5f)
             )
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = "Right Arrow Button.",
-                modifier = Modifier.weight(1f),
-                tint = Color.White
-            )
-        }
     }
 }
 

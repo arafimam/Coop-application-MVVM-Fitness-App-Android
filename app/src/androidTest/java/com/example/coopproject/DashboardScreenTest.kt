@@ -4,12 +4,18 @@ import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.test.espresso.Espresso.onView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.coopproject.model.UserInformation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import org.junit.Test
 import org.junit.runner.RunWith
+import androidx.test.espresso.accessibility.AccessibilityChecks
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.util.HumanReadables
+import org.junit.BeforeClass
 
 
 /**
@@ -20,9 +26,18 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class DashBoardScreenTest() : AndroidTestBase() {
 
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun enableAccessibility(){
+            AccessibilityChecks.enable().setRunChecksFromRootView(true)
+        }
+    }
+
     @Test
     fun verifyDashBoardUI()
     {
+
         val startExerciseButton = composeTestRule.activity.getString(R.string.contDescStartExerciseButton)
         val dayName = getCurrentDay()
         val dashboardBottomNavigation = composeTestRule.activity.getString(R.string.cdForDashboardNav)
@@ -61,6 +76,7 @@ class DashBoardScreenTest() : AndroidTestBase() {
                 assertExists("Total time for exercise is not visible in UI.")
     }
 
+    /*
     @Test
     fun verifyNavigationToInsightsScreen()
     {
@@ -88,4 +104,6 @@ class DashBoardScreenTest() : AndroidTestBase() {
         composeTestRule.onNodeWithContentDescription(dashboardScreenButton)
             .assertExists("Dashboard Screen not visible.")
     }
+
+     */
 }

@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.model.UserExerciseInformation
@@ -168,7 +169,7 @@ fun FinishedButton(
     onStartExerciseClicked: () -> Unit){
     Button(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().height(55.dp)
             .padding(start = BIG_PADDING, end = BIG_PADDING),
         onClick = { onStartExerciseClicked() },
         colors = ButtonDefaults.buttonColors(AppThemeColor),
