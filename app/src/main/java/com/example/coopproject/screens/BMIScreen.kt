@@ -49,11 +49,8 @@ fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
         mutableStateOf("")
     }
 
-
     val BMI: Double = calculateBMIHelper(String.format(Locale.ENGLISH,"%f",weight.value),
     String.format(Locale.ENGLISH,"%f",height.value), weightUnit = weightUnit.value, heightUnit = heightUnit.value)
-        //calculateBMIHelperFunction(weight, height, weightUnit = weightUnit.value, heightUnit = heightUnit.value)
-
 
     Scaffold(
         topBar = {
@@ -72,7 +69,7 @@ fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
                 horizontalAlignment = Alignment.CenterHorizontally
               ){
 
-                  UnitWidget(sharedViewModel = sharedViewModel, getUnitSelected = {
+                  UnitSelector(sharedViewModel = sharedViewModel, getUnitSelected = {
                       unitSystem.value = it
                       if (unitSystem.value == "Imperial Units"){
                           weightUnit.value = "Pounds"
@@ -116,7 +113,7 @@ fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
                   )
                   Divider(color = LighterAppThemeColor,
                       thickness = SMALL_THICKNESS,
-                      modifier = Modifier.padding(top = PADDING_SMALL, bottom = PADDING_MEDIUM,
+                      modifier = Modifier.padding(top = PADDING_SMALL, bottom = PADDING_MEDIUM+ PADDING_NORMAL,
                           start = BIG_PADDING, end = BIG_PADDING) )
               }
 
@@ -138,8 +135,6 @@ fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
             else{
                 BMIScreenBottomBar(message = overWeightMessage)
             }
-
-
         }
     )
 
@@ -160,19 +155,17 @@ fun BMIScreenBottomBar(
         val contentDescriptionForCheckBodyTypeButton = stringResource(R.string.cdForSubmit)
         Button(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth().height(55.dp)
                 .clearAndSetSemantics {
                     contentDescription = contentDescriptionForCheckBodyTypeButton
                 }
                 .padding(
                     start = BIG_PADDING,
                     end = BIG_PADDING,
-                    top = PADDING_NORMAL,
-                    bottom = TOP_PADDING_LARGE
                 ),
             onClick = {
-                      showButton.value = false
-                showMessage.value = true
+                        showButton.value = false
+                        showMessage.value = true
             },
             colors = ButtonDefaults.buttonColors(LighterAppThemeColor),
             shape = RoundedCornerShape(PADDING_NORMAL), elevation = ButtonDefaults.elevation(PADDING_NORMAL)) {
@@ -184,6 +177,9 @@ fun BMIScreenBottomBar(
                 )
 
         }
+        Divider(color = AppBackGroundColor,
+            thickness = SMALL_THICKNESS,
+            modifier = Modifier.padding(bottom = TOP_PADDING_LARGE+ TOP_PADDING_LARGE))
     }
 
     if (showMessage.value){

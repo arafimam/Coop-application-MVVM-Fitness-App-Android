@@ -24,12 +24,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.coopproject.R
 import com.example.coopproject.screens.SharedViewModel
 import com.example.coopproject.ui.theme.*
@@ -203,7 +205,8 @@ fun ExerciseRepresentation(
 
             Box(
                 modifier = Modifier
-                    .fillMaxWidth().semantics { contentDescription = contentDesc.value }
+                    .fillMaxWidth()
+                    .semantics { contentDescription = contentDesc.value }
             ){
                 Row(verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(top = PADDING_SMALL, start = PADDING_SMALL, end = PADDING_SMALL)) {
@@ -296,7 +299,8 @@ fun DoneButton(
 
     Button(
         modifier = Modifier
-            .fillMaxWidth().semantics { contentDescription = contentDesc }
+            .fillMaxWidth()
+            .semantics { contentDescription = contentDesc }
             .padding(
                 start = BIG_PADDING,
                 end = BIG_PADDING,
@@ -323,15 +327,11 @@ fun DoneButton(
 }
 
 @Composable
-fun UnitWidget(
+fun UnitSelector(
     modifier: Modifier = Modifier,
     sharedViewModel: SharedViewModel,
     getUnitSelected: (String) -> Unit
 ){
-    var expanded = remember {
-        mutableStateOf(false)
-    }
-
     var selectedIndex = remember {
         mutableStateOf(0)
     }
@@ -347,39 +347,59 @@ fun UnitWidget(
         listOf("Metric Units", "Imperial Units")
     }
 
+
     getUnitSelected(items[selectedIndex.value])
 
-    Box(modifier = Modifier
-        .clickable { expanded.value = true }
-        .fillMaxWidth()
-        .padding(top = PADDING_MEDIUM), contentAlignment = Alignment.Center){
-        Row(verticalAlignment = Alignment.CenterVertically){
-            Text(items[selectedIndex.value], color = Color.White)
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_arrow_drop_down_24), contentDescription = "Drop Down Button.",
-                tint = Color.White)
-        }
+    val colorOfSelected = IconColorForExerciseCard
+    val colorOfNotSelected = FadedTextColor
 
-        DropdownMenu(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth(),
-            expanded = expanded.value,
-            onDismissRequest = { expanded.value = false }) {
-
-            items.forEachIndexed{index,s ->
-                DropdownMenuItem(onClick = {
-                    selectedIndex.value = index
-                    expanded.value = false
-                }) {
-                    Text(text = s)
-                }
-            }
-
-        }
+    // pre selected.
+    val colorOfButton1 = remember{
+        mutableStateOf(colorOfSelected)
     }
 
+    //pre unselected.
+    val colorOfButton2 = remember{
+        mutableStateOf(colorOfNotSelected)
+    }
 
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = PADDING_MEDIUM)
+            ){
+
+        Button(onClick = {
+        colorOfButton1.value = colorOfSelected
+        colorOfButton2.value = colorOfNotSelected
+            selectedIndex.value = 0
+        }, shape = RoundedCornerShape(15.dp),
+        colors = ButtonDefaults.buttonColors(colorOfButton1.value),
+            modifier = Modifier.padding(start = BIG_PADDING, end = PADDING_SMALL).clearAndSetSemantics {
+                contentDescription = "Button For ${items[0]}. Double tap to select."
+            }
+            ) {
+
+            Text(text = items[0])
+        }
+
+        Button(onClick = {
+            colorOfButton1.value = colorOfNotSelected
+            colorOfButton2.value = colorOfSelected
+            selectedIndex.value = 1
+        },
+            shape = RoundedCornerShape(15.dp),
+            colors = ButtonDefaults.buttonColors(colorOfButton2.value),
+            modifier = Modifier.padding(start = PADDING_SMALL, end = PADDING_MEDIUM).clearAndSetSemantics {
+                contentDescription = "Button For ${items[1]}. Double tap to select."
+            }
+        ) {
+            Text(text = " ${items[1]} ")
+        }
+
+    }
 }
+
 @Composable
 fun ParameterWidget(
     parameterType: String,
@@ -401,7 +421,6 @@ fun ParameterWidget(
     if (parameterValue.value < 0){
         Toast.makeText(LocalContext.current,"$parameterType cannot be less than 0.",Toast.LENGTH_SHORT).show()
         parameterValue.value = parameterDefaultValue
-
     }
 
     Card(
@@ -420,23 +439,29 @@ fun ParameterWidget(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Text(text = parameterType, color = Color.White,
-                style = MaterialTheme.typography.h4)
-            Text(text = parameterUnit, color = FadedTextColor,
-                style = MaterialTheme.typography.body1,
-                fontWeight = FontWeight.Bold
-            )
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .clearAndSetSemantics { contentDescription = "$parameterType in $parameterUnit" },
+            horizontalAlignment = Alignment.CenterHorizontally){
+                Text(text = parameterType, color = Color.White,
+                    style = MaterialTheme.typography.h4)
+                Text(text = parameterUnit, color = FadedTextColor,
+                    style = MaterialTheme.typography.body1,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
 
             Row(
                 modifier = Modifier.padding(top = PADDING_SMALL)
             ) {
                 IconButton(onClick = {
                     parameterValue.value = parameterValue.value - 1
-                },
+                },modifier = Modifier.semantics{ contentDescription = "Subtract Value Icon. Double tap to reduce $parameterType by 1" },
                     enabled = parameterValue.value > parameterMinValue
                 ) {
                     Icon(painter = painterResource(id = R.drawable.ic_baseline_remove_circle_24),
-                        contentDescription = "Subtract value icon.",
+                        contentDescription = "",
                         tint = Color.White, modifier = Modifier.size(45.dp))
                 }
 
@@ -445,18 +470,23 @@ fun ParameterWidget(
                         parameterValue.value = it.toFloat()
                     }
                 },
-                    modifier = Modifier.width(80.dp),
+                    modifier = Modifier
+                        .width(80.dp)
+                        .clearAndSetSemantics {
+                            contentDescription =
+                                "Current $parameterType value is ${parameterValue.value}. Double tap to edit by using the Edit Text Field"
+                        },
                     textColor = Color.White
                 )
                 //Text(text = weightValue.value.toString(),color = Color.White, style = MaterialTheme.typography.h4,)
 
                 IconButton(onClick = {
                     parameterValue.value = parameterValue.value + 1
-                },
+                },modifier = Modifier.semantics { contentDescription = "Add Value Icon. Double tap to add $parameterType by 1" },
                     enabled = parameterValue.value < parameterMaxValue
                 ) {
                     Icon(painter = painterResource(id = R.drawable.ic_baseline_add_circle_24),
-                        contentDescription = "Add value icon.",
+                        contentDescription = "",
                         tint = Color.White,modifier = Modifier.size(45.dp))
                 }
 
@@ -470,10 +500,8 @@ fun ParameterWidget(
 
 @Preview(showBackground = true)
 @Composable
-private fun View(){
-    ExerciseRepresentation(exerciseType = "Push Up", reps = "3", sets = "4", image = R.drawable.inclinedchestpress,
-        finished = false) {
-    }
+private fun PreView(){
+    UnitSelector(modifier = Modifier, sharedViewModel = viewModel(), getUnitSelected = {})
 }
 
 
