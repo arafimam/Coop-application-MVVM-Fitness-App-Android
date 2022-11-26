@@ -80,4 +80,13 @@
     <string name="cdtextFieldForUserName">Text Field For user name. Double Tap to write.</string>
 
 
+    <!-- Test Tags-->
+    <string name="testDagDayName">dayName</string>
+    <string name="TestTagExerciseInfo">ExerciseType</string>
+    <string name="TestTagStartExerciseButton">Start Exercise Button</string>
+    <string name="TestTagHomeNav">HomeNavigation</string>
+    <string name="TestTagInsightsNav">InsightsNav</string>
+    <string name="TestTagNav">ProfileNav</string>
+
+
 </resources>

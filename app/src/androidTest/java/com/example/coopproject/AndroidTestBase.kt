@@ -1,25 +1,13 @@
 package com.example.coopproject
 
-import android.content.Context
-import androidx.activity.viewModels
-import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.test.hasTestTag
+import android.util.Log
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.coopproject.data.UserDao
-import com.example.coopproject.data.UserDatabase
-import com.example.coopproject.screens.SharedViewModel
+import com.example.coopproject.testUtilities.BottomAppBarOptions
 import com.example.coopproject.utils.*
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
-import org.junit.runner.RunWith
-import java.io.IOException
 import java.util.*
 
 open class AndroidTestBase {
@@ -28,30 +16,40 @@ open class AndroidTestBase {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     /**
-     * Gets the number of finished workout value.
-     * @return Int of the number of finished work out value.
+     * Pre-Requisite: App is on Dashboard Screen.
+     * Clicks on Navigation Button in Bottom App bar.
+     * @param ButtonOption
      */
-    fun getNumberOfFinishedWorkout(): Int{
-        val value = composeTestRule.onNode(hasTestTag("finished"))
-        return (value.fetchSemanticsNode().config[SemanticsProperties.Text][0].text).toInt()
+    fun clickOnNavigationButton(ButtonOption: BottomAppBarOptions){
+        if (ButtonOption == BottomAppBarOptions.HOME){
+            //click on navigation Home button
+            val homeButtonTestTag = composeTestRule.activity.getString(R.string.TestTagHomeNav)
+            composeTestRule.onNodeWithTag(homeButtonTestTag).performClick()
+        }
+        else if (ButtonOption == BottomAppBarOptions.INSIGHTS){
+            // click on navigation Insights.
+            val insightsTestTag = composeTestRule.activity.getString(R.string.TestTagInsightsNav)
+            composeTestRule.onNodeWithTag(insightsTestTag).performClick()
+        }
+        else if (ButtonOption == BottomAppBarOptions.PROFILE){
+            // click on navigation Profile
+            val profileTestTag = composeTestRule.activity.getString(R.string.TestTagNav)
+            composeTestRule.onNodeWithTag(profileTestTag).performClick()
+        }
+        else {
+            Log.d("TEST-ERROR","No such option.")
+        }
     }
 
     /**
-     * Gets the point wheel content description.
+     * Pre-requisite: App is on Dashboard Screen.
+     * Clicks on Start Exercise Button.
      */
-    fun getPointWheelContentDescription(): String{
-        val value = composeTestRule.onNode(hasTestTag("PointsWheel"))
-       return (value.fetchSemanticsNode().config[SemanticsProperties.ContentDescription][0])
+    fun clickOnStartExerciseButton(){
+        val startExerciseButtonTestTag = composeTestRule.activity
+            .getString(R.string.TestTagStartExerciseButton)
+        composeTestRule.onNodeWithTag(startExerciseButtonTestTag).performClick()
     }
-
-    /**
-     * Gets the number of unfinished workout value.
-     */
-    fun getNumberOfUnfinishedWorkout(): Int{
-        val value = composeTestRule.onNode(hasTestTag("unfinished"))
-        return (value.fetchSemanticsNode().config[SemanticsProperties.Text][0].text).toInt()
-    }
-
     /**
      * Gets current day.
      * @return String which is current day name.
@@ -110,6 +108,7 @@ open class AndroidTestBase {
         composeTestRule.waitForIdle()
     }
 
+    //Dummy info similar to what stored in Room-db
     private fun getDummyDataForCurrentDayExercise(): ExerciseInformation {
         var sb1: SubExercise = SubExercise("Bench Press",15,2,2,30.0,false);
         var sb2: SubExercise = SubExercise("Push Up",30,3,15,20.0,false);

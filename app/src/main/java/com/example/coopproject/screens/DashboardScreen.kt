@@ -13,12 +13,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.text
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -100,8 +98,10 @@ private fun InfoForDashboard(
                 val contentDescriptionForTime = "$hours hours and $minutes minutes"
                 val contentDescriptionForExerciseType = "Exercise type for ${exerciseInformation.day} is ${stringResource(id = getExerciseMap()[exerciseInformation.exerciseType!!]!!)}."
                 Column(modifier = Modifier
+                    .testTag(stringResource(R.string.TestTagExerciseInfo))
                     .clearAndSetSemantics {
-                        contentDescription = contentDescriptionForExerciseType + "Also, Total duration for exercise is" + contentDescriptionForTime
+                        contentDescription =
+                            contentDescriptionForExerciseType + "Also, Total duration for exercise is " + contentDescriptionForTime
                     }
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally){
@@ -114,9 +114,7 @@ private fun InfoForDashboard(
                         color = Color.White, fontWeight = FontWeight.ExtraBold,
                         modifier = Modifier
                             .padding(bottom = PADDING_MEDIUM)
-                            .clearAndSetSemantics {
-                                contentDescription = contentDescriptionForExerciseType
-                            }
+
 
                     )
                     Icon(
@@ -159,10 +157,12 @@ private fun StartExerciseButton(
     val contentDescriptionsForStartExerciseButton = stringResource(id = R.string.contDescStartExerciseButton)
     Button(
         modifier = Modifier
+            .testTag(stringResource(R.string.TestTagStartExerciseButton))
             .clearAndSetSemantics {
                 contentDescription = contentDescriptionsForStartExerciseButton
             }
-            .fillMaxWidth().height(55.dp)
+            .fillMaxWidth()
+            .height(55.dp)
             .padding(start = BIG_PADDING, end = BIG_PADDING),
         onClick = { onStartExerciseClicked() },
         colors = ButtonDefaults.buttonColors(LighterAppThemeColor),
@@ -213,8 +213,17 @@ private fun BottomBar(
         val contentDescriptionForInsightsNavigation: String = stringResource(R.string.cdinsightsScreenNav)
         val contentDescriptionForProfileNavigation: String = stringResource(R.string.cdProfileScreenNav)
         // Navigation options.
+
+        // test tags
+        val testTagHome = stringResource(R.string.TestTagHomeNav)
+        val testTagInsights = stringResource(R.string.TestTagInsightsNav)
+        val testTagProfile = stringResource(R.string.TestTagNav)
         BottomNavigationItem(
-            modifier = Modifier.clearAndSetSemantics { contentDescription = contentDescriptionsForDashboardNavigation },
+            modifier = Modifier.clearAndSetSemantics {
+                contentDescription = contentDescriptionsForDashboardNavigation
+                testTag = testTagHome
+
+                                                     },
             selected = selectedIndex.value == 0,
             onClick = {
                       selectedIndex.value = 0
@@ -225,7 +234,10 @@ private fun BottomBar(
         )
 
         BottomNavigationItem(
-            modifier = Modifier.clearAndSetSemantics { contentDescription = contentDescriptionForInsightsNavigation },
+            modifier = Modifier.clearAndSetSemantics {
+                contentDescription = contentDescriptionForInsightsNavigation
+                testTag = testTagInsights
+                                                     },
             selected = selectedIndex.value == 1,
             onClick = {
                 selectedIndex.value = 1;
@@ -236,7 +248,10 @@ private fun BottomBar(
         )
 
         BottomNavigationItem(
-            modifier = Modifier.clearAndSetSemantics { contentDescription = contentDescriptionForProfileNavigation },
+            modifier = Modifier.clearAndSetSemantics {
+                contentDescription = contentDescriptionForProfileNavigation
+                testTag = testTagProfile
+                                                     },
             selected = selectedIndex.value == 2,
             onClick = {
                 selectedIndex.value = 2;
@@ -262,6 +277,7 @@ private fun TopBar(
                         Text(text = stringResource(id = getDayMap()[exerciseInformation.day!!]!!), color = Color.White,
                             modifier = Modifier
                                 .align(Alignment.Center)
+                                .testTag(stringResource(R.string.testDagDayName))
                                 .semantics {
                                     contentDescription = contentDescriptionForDay
                                 })
