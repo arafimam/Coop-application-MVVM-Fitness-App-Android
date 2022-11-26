@@ -23,10 +23,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.*
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -77,9 +75,13 @@ private fun BodyTypeButton(
 )
 {
     val contentDescriptionForBodyTypeButton = stringResource(R.string.checkBodyType)
+    val testTagForBodyType = stringResource(R.string.TestTagBodyType)
     Button(
         modifier = Modifier
-            .clearAndSetSemantics { contentDescription = contentDescriptionForBodyTypeButton }
+            .clearAndSetSemantics {
+                contentDescription = contentDescriptionForBodyTypeButton
+                testTag = testTagForBodyType
+            }
             .fillMaxWidth()
             .height(55.dp)
             .padding(start = BIG_PADDING, end = BIG_PADDING, top = PADDING_NORMAL),
@@ -103,12 +105,15 @@ fun WorkoutInformation(
 {
     val contentDescriptionForWorkoutInformation = stringResource(id = R.string.daysWorkedOut) + "is $finishWorkout." +
             stringResource(id = R.string.daysNotWorkedout) + "is $unfinishedWorkout."
+    val testTagForWorkoutInformation = stringResource(R.string.TestTagWorkoutInfo)
     Card(modifier = Modifier
         .fillMaxWidth()
         .height(150.dp)
         .padding(start = PADDING_NORMAL, end = PADDING_NORMAL, top = PADDING_NORMAL)
         .clearAndSetSemantics {
             contentDescription = contentDescriptionForWorkoutInformation
+            testTag = testTagForWorkoutInformation
+            text = AnnotatedString("$finishWorkout, $unfinishedWorkout")
         },
     backgroundColor = CardColor,
     shape = RoundedCornerShape(15.dp)) {
@@ -167,11 +172,13 @@ private fun WelcomeText(
 )
 {
     // Welcome Text: Hello <username> 'hand_wave' \n This is your progress
+    val testTagWelcomeText = stringResource(R.string.TestTagWelcomeText)
     if (userName!= null){
         Column(modifier = Modifier.fillMaxWidth()
             .padding(top = BIG_PADDING, start = BIG_PADDING)
             .clearAndSetSemantics {
                 contentDescription = "Hello $userName, This is Your Progress."
+                testTag = testTagWelcomeText
             }) {
             Row(modifier = Modifier.padding(bottom = SMALL_THICKNESS)) {
                 Text(text = "${stringResource(id = R.string.greeting1)} $userName, ",
@@ -202,12 +209,21 @@ private fun PointsWheel(
         unfinishedNumber = unfinishedWorkout
     )
     } out of $totalScore"
+    val testTagPoints = stringResource(R.string.TestTagPointsWheel)
     Card(
         backgroundColor = CardColor,
         modifier = Modifier
             .padding(top = PADDING_MEDIUM, start = BIG_PADDING, end = BIG_PADDING)
             .fillMaxWidth()
-            .height(200.dp).clearAndSetSemantics { contentDescription = contentDescriptionForPointsWheel },
+            .height(200.dp).clearAndSetSemantics {
+                contentDescription = contentDescriptionForPointsWheel
+                text = AnnotatedString("${calculateUserPoints(
+                    finishedNumber = finishWorkout,
+                    unfinishedNumber = unfinishedWorkout
+                )
+                }")
+                testTag = testTagPoints
+                                                 },
         shape = RoundedCornerShape(15.dp)
     )
     {
@@ -287,10 +303,14 @@ private fun CustomizedProgressWheel(
 private fun TopBarInsightScreen(
     onBackClicked: () -> Unit
 ){
+    val testTagBackButton = stringResource(R.string.TestTagBackButton)
     TopAppBar(
         backgroundColor = AppThemeColor,
         content = {
-            IconButton(onClick = { onBackClicked() }, modifier = Modifier.clearAndSetSemantics { contentDescription = "Back Button. Double Tap to navigate to Dashboard Screen." }) {
+            IconButton(onClick = { onBackClicked() }, modifier = Modifier.clearAndSetSemantics {
+                contentDescription = "Back Button. Double Tap to navigate to Dashboard Screen."
+                testTag = testTagBackButton
+            }) {
                 Icon(imageVector = Icons.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.cdBackButtonInsigtsScreen),
                 tint = Color.White)

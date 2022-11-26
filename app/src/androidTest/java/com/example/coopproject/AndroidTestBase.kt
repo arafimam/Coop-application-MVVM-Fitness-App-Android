@@ -1,10 +1,11 @@
 package com.example.coopproject
 
+import android.content.res.TypedArray
 import android.util.Log
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performClick
+import androidx.compose.ui.unit.IntSize
 import com.example.coopproject.testUtilities.BottomAppBarOptions
 import com.example.coopproject.utils.*
 import org.junit.Rule
@@ -14,6 +15,65 @@ open class AndroidTestBase {
 
     @get: Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    /**
+     * Navigates backward.
+     */
+    fun navigateBack(){
+        val testTagBackButton = composeTestRule.activity.getString(R.string.TestTagBackButton)
+        composeTestRule.onNodeWithTag(testTagBackButton).performClick()
+    }
+
+    /**
+     * Navigates to Insights Screen and waits to load.
+     */
+    fun navigateToInsightsScreenAndWaitToLoad(){
+        clickOnNavigationButton(BottomAppBarOptions.INSIGHTS)
+        composeTestRule.waitForIdle()
+    }
+
+    /**
+     * Pre-requisite: App is on Insights Screen.
+     * Clicks on check Body Type Button.
+     */
+    fun clickOnCheckBodyTypeButton(){
+        val testTagForBodyTypeButton = composeTestRule.activity.getString(R.string.TestTagBodyType)
+        composeTestRule.onNodeWithTag(testTagForBodyTypeButton).performClick()
+    }
+
+    /**
+     * Pre-requisite: App is on Insights Screen.
+     * Gets the Number of Unfinished Workout.
+     * @return String number of unfinished workout.
+     */
+    fun getNumberOfUnfinishedWorkout(): String{
+        return getPointsArray()[1]
+    }
+
+    /**
+     * Pre-requisite: App is on Insights Screen.
+     * Gets the Number of Finished Workout.
+     * @return String number of finished workout.
+     */
+    fun getNumberOfFinishedWorkout(): String {
+        return getPointsArray()[0]
+    }
+
+    private fun getPointsArray(): Array<String> {
+        val testTagForWorkoutInfo = composeTestRule.activity.getString(R.string.TestTagWorkoutInfo)
+        val result = composeTestRule.onNodeWithTag(testTagForWorkoutInfo).fetchSemanticsNode().config[SemanticsProperties.Text][0].text
+        return result.split(",").toTypedArray()
+    }
+    /**
+     * Pre-requisite: App is on Insights Screen.
+     * Get user points from Insights Screen.
+     * @return String points
+     */
+    fun getPoints(): String{
+        val pointsWheelTestTag = composeTestRule.activity.getString(R.string.TestTagPointsWheel)
+        return composeTestRule.onNodeWithTag(pointsWheelTestTag).fetchSemanticsNode()
+            .config[SemanticsProperties.Text][0].text
+    }
 
     /**
      * Pre-Requisite: App is on Dashboard Screen.
@@ -79,33 +139,6 @@ open class AndroidTestBase {
     fun getCurrentExerciseType(): String?{
         val exerciseInformation: ExerciseInformation = getDummyDataForCurrentDayExercise()
         return exerciseInformation.exerciseType
-    }
-
-    /**
-     * Navigates to insight Screen.
-     */
-    fun navigateToInsightsScreen(){
-        val insightsScreenNavigationButton = composeTestRule.activity.getString(R.string.cdinsightsScreenNav)
-        composeTestRule.onNodeWithContentDescription(insightsScreenNavigationButton).performClick()
-        composeTestRule.waitForIdle()
-    }
-
-    /**
-     * Navigates to Profile Screen.
-     */
-    fun navigateToProfileScreen(){
-        val profileScreenNavigationButton = composeTestRule.activity.getString(R.string.cdProfileScreenNav)
-        composeTestRule.onNodeWithContentDescription(profileScreenNavigationButton).performClick()
-        composeTestRule.waitForIdle()
-    }
-
-    /**
-     * Navigates to dashboard screen.
-     */
-    fun navigateToDashBoardScreen(){
-        val dashBoardScreenButton = composeTestRule.activity.getString(R.string.cdForDashboardNav)
-        composeTestRule.onNodeWithContentDescription(dashBoardScreenButton).performClick()
-        composeTestRule.waitForIdle()
     }
 
     //Dummy info similar to what stored in Room-db

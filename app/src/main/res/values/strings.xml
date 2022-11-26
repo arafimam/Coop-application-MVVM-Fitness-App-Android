@@ -87,6 +87,11 @@
     <string name="TestTagHomeNav">HomeNavigation</string>
     <string name="TestTagInsightsNav">InsightsNav</string>
     <string name="TestTagNav">ProfileNav</string>
+    <string name="TestTagWelcomeText">welcomeText</string>
+    <string name="TestTagPointsWheel">PointsWheel</string>
+    <string name="TestTagWorkoutInfo">workoutInfo</string>
+    <string name="TestTagBodyType">BodyTypeTestTag</string>
+    <string name="TestTagBackButton">Back Button</string>
 
 
 </resources>
