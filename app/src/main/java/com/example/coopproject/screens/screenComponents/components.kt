@@ -21,10 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.*
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -297,10 +295,14 @@ fun DoneButton(
         )
     }
 
+    val testTagDoneButton = stringResource(R.string.TestTagDoneButtonExercise)
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .semantics { contentDescription = contentDesc }
+            .semantics {
+                contentDescription = contentDesc
+                testTag = testTagDoneButton
+            }
             .padding(
                 start = BIG_PADDING,
                 end = BIG_PADDING,
@@ -362,6 +364,8 @@ fun UnitSelector(
     val colorOfButton2 = remember{
         mutableStateOf(colorOfNotSelected)
     }
+    val testTagButton1 = stringResource(R.string.TestTagButton1)
+    val testTagButton2 = stringResource(R.string.TestTagButton2)
 
     Row (
         modifier = Modifier
@@ -377,6 +381,7 @@ fun UnitSelector(
         colors = ButtonDefaults.buttonColors(colorOfButton1.value),
             modifier = Modifier.padding(start = BIG_PADDING, end = PADDING_SMALL).clearAndSetSemantics {
                 contentDescription = "Button For ${items[0]}. Double tap to select."
+                testTag = testTagButton1
             }
             ) {
 
@@ -392,6 +397,7 @@ fun UnitSelector(
             colors = ButtonDefaults.buttonColors(colorOfButton2.value),
             modifier = Modifier.padding(start = PADDING_SMALL, end = PADDING_MEDIUM).clearAndSetSemantics {
                 contentDescription = "Button For ${items[1]}. Double tap to select."
+                testTag = testTagButton2
             }
         ) {
             Text(text = " ${items[1]} ")
@@ -423,6 +429,7 @@ fun ParameterWidget(
         parameterValue.value = parameterDefaultValue
     }
 
+    val testTagForUnit = stringResource(R.string.TestTagUnit)
     Card(
         backgroundColor = CardColor,
         modifier = Modifier
@@ -441,7 +448,11 @@ fun ParameterWidget(
         ){
             Column(modifier = Modifier
                 .fillMaxWidth()
-                .clearAndSetSemantics { contentDescription = "$parameterType in $parameterUnit" },
+                .clearAndSetSemantics {
+                    contentDescription = "$parameterType in $parameterUnit"
+                    testTag = testTagForUnit
+                    text = AnnotatedString(parameterUnit)
+                                      },
             horizontalAlignment = Alignment.CenterHorizontally){
                 Text(text = parameterType, color = Color.White,
                     style = MaterialTheme.typography.h4)
@@ -452,19 +463,23 @@ fun ParameterWidget(
             }
 
 
+            val TestTagSubtractButton = stringResource(R.string.TestTagSubtractButton)
             Row(
                 modifier = Modifier.padding(top = PADDING_SMALL)
             ) {
                 IconButton(onClick = {
                     parameterValue.value = parameterValue.value - 1
-                },modifier = Modifier.semantics{ contentDescription = "Subtract Value Icon. Double tap to reduce $parameterType by 1" },
+                },modifier = Modifier.semantics{
+                    contentDescription = "Subtract Value Icon. Double tap to reduce $parameterType by 1"
+                    testTag = TestTagSubtractButton
+                                               },
                     enabled = parameterValue.value > parameterMinValue
                 ) {
                     Icon(painter = painterResource(id = R.drawable.ic_baseline_remove_circle_24),
                         contentDescription = "",
                         tint = Color.White, modifier = Modifier.size(45.dp))
                 }
-
+                val testTagForParameter = stringResource(R.string.TestTagForParameterValue)
                 AppInputNumberField(text = String.format("%.1f",parameterValue.value), label = "", onTextChange = {
                     if (it != ""){
                         parameterValue.value = it.toFloat()
@@ -473,16 +488,21 @@ fun ParameterWidget(
                     modifier = Modifier
                         .width(80.dp)
                         .clearAndSetSemantics {
+                            text = AnnotatedString("${parameterValue.value}")
+                            testTag = testTagForParameter
                             contentDescription =
                                 "Current $parameterType value is ${parameterValue.value}. Double tap to edit by using the Edit Text Field"
                         },
                     textColor = Color.White
                 )
                 //Text(text = weightValue.value.toString(),color = Color.White, style = MaterialTheme.typography.h4,)
-
+                val testTagForPlusButton = stringResource(R.string.TestTagPlusButton)
                 IconButton(onClick = {
                     parameterValue.value = parameterValue.value + 1
-                },modifier = Modifier.semantics { contentDescription = "Add Value Icon. Double tap to add $parameterType by 1" },
+                },modifier = Modifier.semantics {
+                    contentDescription = "Add Value Icon. Double tap to add $parameterType by 1"
+                    testTag = testTagForPlusButton
+                                                },
                     enabled = parameterValue.value < parameterMaxValue
                 ) {
                     Icon(painter = painterResource(id = R.drawable.ic_baseline_add_circle_24),

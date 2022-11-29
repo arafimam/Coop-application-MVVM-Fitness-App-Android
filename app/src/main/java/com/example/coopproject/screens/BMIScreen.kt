@@ -14,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -151,12 +153,16 @@ fun BMIScreenBottomBar(
     val showMessage = remember {
         mutableStateOf(false)
     }
+
+    val testTagCheckBodyTypeButton  = stringResource(R.string.TestTagCheckBodyType)
+    val testTagRetryButton = stringResource(R.string.TestTagRetryButton)
     if (showButton.value){
         val contentDescriptionForCheckBodyTypeButton = stringResource(R.string.cdForSubmit)
         Button(
             modifier = Modifier
                 .fillMaxWidth().height(55.dp)
                 .clearAndSetSemantics {
+                    testTag = testTagCheckBodyTypeButton
                     contentDescription = contentDescriptionForCheckBodyTypeButton
                 }
                 .padding(
@@ -203,7 +209,8 @@ fun BMIScreenBottomBar(
                         showMessage.value = false
                     }) {
                         Icon(painter = painterResource(id = R.drawable.ic_baseline_refresh_24),
-                            contentDescription = "Try again button.", tint = Color.White)
+                            contentDescription = "Try again button.", tint = Color.White,
+                        modifier = Modifier.testTag(testTagRetryButton))
 
                     }
 

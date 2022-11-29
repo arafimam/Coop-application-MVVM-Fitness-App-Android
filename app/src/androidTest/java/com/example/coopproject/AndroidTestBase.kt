@@ -33,6 +33,23 @@ open class AndroidTestBase {
     }
 
     /**
+     * Navigates to Profile Screen and waits to load.
+     */
+    fun navigateToProfileScreenAndWaitToLoad(){
+        clickOnNavigationButton(BottomAppBarOptions.PROFILE)
+        composeTestRule.waitForIdle()
+    }
+
+    /**
+     * Navigates to check body type screen and waits to load.
+     */
+    fun navigateToCheckBodyTypeScreenAndWaitToLoad(){
+        navigateToInsightsScreenAndWaitToLoad()
+        clickOnCheckBodyTypeButton()
+        composeTestRule.waitForIdle()
+    }
+
+    /**
      * Pre-requisite: App is on Insights Screen.
      * Clicks on check Body Type Button.
      */
@@ -47,7 +64,7 @@ open class AndroidTestBase {
      * @return String number of unfinished workout.
      */
     fun getNumberOfUnfinishedWorkout(): String{
-        return getPointsArray()[1]
+        return getPointsArray()[1].trim()
     }
 
     /**
@@ -56,7 +73,7 @@ open class AndroidTestBase {
      * @return String number of finished workout.
      */
     fun getNumberOfFinishedWorkout(): String {
-        return getPointsArray()[0]
+        return getPointsArray()[0].trim()
     }
 
     private fun getPointsArray(): Array<String> {
@@ -118,6 +135,10 @@ open class AndroidTestBase {
         val listOfDays: List<String> = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
         val calendar: Calendar = Calendar.getInstance()
         return listOfDays[calendar.get(Calendar.DAY_OF_WEEK)-1]
+    }
+
+    fun getDummyUserName(): String{
+        return "Syed"
     }
 
     /**

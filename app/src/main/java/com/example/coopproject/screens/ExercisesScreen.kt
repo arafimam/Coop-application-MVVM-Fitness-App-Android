@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -167,9 +168,10 @@ fun AlertDialogForUnfinishedWorkout(
 @Composable
 fun FinishedButton(
     onStartExerciseClicked: () -> Unit){
+    val testTagFinishExerciseButton = stringResource(R.string.TestTagFinishExerciseButton)
     Button(
         modifier = Modifier
-            .fillMaxWidth().height(55.dp)
+            .fillMaxWidth().height(55.dp).testTag(testTagFinishExerciseButton)
             .padding(start = BIG_PADDING, end = BIG_PADDING),
         onClick = { onStartExerciseClicked() },
         colors = ButtonDefaults.buttonColors(AppThemeColor),

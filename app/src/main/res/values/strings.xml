@@ -92,6 +92,21 @@
     <string name="TestTagWorkoutInfo">workoutInfo</string>
     <string name="TestTagBodyType">BodyTypeTestTag</string>
     <string name="TestTagBackButton">Back Button</string>
+    <string name="TestTagUserNameTextField">userName</string>
+    <string name="TestTagAge">testAge</string>
+    <string name="TestTagRadioButton">RadioTestTag</string>
+    <string name="TestTagProfileScreenBottomBar">TestTagProfileScreenBottomBar</string>
+    <string name="TestTagDoneButton">TestTagDoneButton</string>
+    <string name="TestTagButton1">Button1</string>
+    <string name="TestTagButton2">TestTagButton2</string>
+    <string name="TestTagUnit">UnitTestTag</string>
+    <string name="TestTagPlusButton">TestTagPlusButton</string>
+    <string name="TestTagSubtractButton">TestTagSubtractButton</string>
+    <string name="TestTagForParameterValue">TestTagForParameterValue</string>
+    <string name="TestTagCheckBodyType">TestTagCheckBodyType</string>
+    <string name="TestTagRetryButton">TestTagRetryButton</string>
+    <string name="TestTagDoneButtonExercise">TestTagDoneButton</string>
+    <string name="TestTagFinishExerciseButton">TestTagFinishExerciseButton</string>
 
 
 </resources>

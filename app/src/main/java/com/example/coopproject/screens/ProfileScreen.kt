@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -146,9 +147,14 @@ private fun ProfileScreenAlertDialog(
 fun ProfileScreenBottomBar()
 {
 
-    val contentDescriptionForBottomAppBar = stringResource(R.string.warningText1Profile) +"."+ stringResource(R.string.warningText2Profile)
-        Card(modifier = Modifier
-            .fillMaxWidth().clearAndSetSemantics { contentDescription = contentDescriptionForBottomAppBar }
+    val contentDescriptionForBottomAppBar = stringResource(R.string.warningText1Profile) +" "+ stringResource(R.string.warningText2Profile)
+    val testTagMsg = stringResource(R.string.TestTagProfileScreenBottomBar)
+    Card(modifier = Modifier
+            .fillMaxWidth()
+            .clearAndSetSemantics {
+                contentDescription = contentDescriptionForBottomAppBar
+                testTag = testTagMsg
+            }
             .height(125.dp),
         shape = RoundedCornerShape(topEnd = TOP_PADDING_LARGE, topStart = TOP_PADDING_LARGE),
         backgroundColor = AppThemeColor){
@@ -240,7 +246,7 @@ fun ProfileScreenContent(
                     modifier = Modifier.padding(bottom = PADDING_SMALL)
                 )
                 val contentDescriptionForUserName = "Current user name is ${username.value}. Double tap to Edit."
-                val testTagForUserNameTextField = "userName"
+                val testTagForUserNameTextField = stringResource(R.string.TestTagUserNameTextField)
                 AppInputTextField(text = username.value, label = "User name", onTextChange = {
                     username.value = it
                     editMade.value = true
@@ -249,7 +255,8 @@ fun ProfileScreenContent(
                         .background(Color.White, RoundedCornerShape(5.dp))
                         .clearAndSetSemantics {
                             testTag = "userName"
-                                contentDescription = contentDescriptionForUserName
+                            contentDescription = contentDescriptionForUserName
+                            text = AnnotatedString("${username.value}")
                         }
                 )
                 Divider(color = LighterAppThemeColor,
@@ -268,19 +275,30 @@ fun ProfileScreenContent(
                     )
                 }
 
+                val testTageBodyType = stringResource(R.string.TestTagRadioButton)
                 Row(modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = BIG_PADDING)) {
                       itemsForBodyType.forEach{
-                          Row(modifier = Modifier.weight(6f).clearAndSetSemantics {
-                              contentDescription = "Radio Button option for $it hours."
-                              stateDescription = if (activityToBodyType[selectedValue.value] == it){"Radio Button for ${it} hours is Selected."} else{"Radio Button for ${it} hours not selected."}
-                          }.clickable {
-                              selectedValue.value = bodyTypeToActivity[it]!!
-                              if (it!=userInfo.bodyType){
-                                  editMade.value = true
+                          Row(modifier = Modifier
+                              .weight(6f)
+                              .clearAndSetSemantics {
+                                  contentDescription = "Radio Button option for $it hours."
+                                  stateDescription =
+                                      if (activityToBodyType[selectedValue.value] == it) {
+                                          "Radio Button for ${it} hours is Selected."
+                                      } else {
+                                          "Radio Button for ${it} hours not selected."
+                                      }
+                                  testTag = testTageBodyType
+                                  text = AnnotatedString("${selectedValue.value}")
                               }
-                          }){
+                              .clickable {
+                                  selectedValue.value = bodyTypeToActivity[it]!!
+                                  if (it != userInfo.bodyType) {
+                                      editMade.value = true
+                                  }
+                              }){
                               RadioButton(
                                   modifier = Modifier.padding(end = 5.dp),
                                   selected = activityToBodyType[selectedValue.value] == it,
@@ -334,10 +352,16 @@ fun ProfileScreenContent(
                     }, mYear.value, mMonth.value, mDay.value
                 )
 
+                val testTagAge = stringResource(R.string.TestTagAge)
                 Card(modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp).clearAndSetSemantics {
-                        contentDescription = "Current age is ${age.value}. Double tap to set of date of birth."
+                    .height(55.dp)
+                    .clearAndSetSemantics {
+                        contentDescription =
+                            "Current age is ${age.value}. Double tap to set of date of birth."
+                        testTag = testTagAge
+                        text = AnnotatedString("${age.value}")
+
                     }
                     .clickable {
                         mDatePickerDialog.show()
@@ -380,15 +404,20 @@ fun ProfileScreenTopBar(
 )
 {
     val contentDescriptionForDoneButton = stringResource(R.string.cdDoneButton)
+    val backButtonTag = stringResource(id = R.string.TestTagBackButton)
+    val doneButtonTag = stringResource(R.string.TestTagDoneButton)
     TopAppBar(
         backgroundColor = AppThemeColor,
         contentColor = Color.White
     ) {
         Box(modifier = Modifier.fillMaxWidth()){
             IconButton(onClick = { onBackClicked() },
-                modifier = Modifier.align(Alignment.CenterStart)
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
                     .clearAndSetSemantics {
-                        contentDescription = "Back Button. Double Tap to navigate to Dashboard Screen."
+                        contentDescription =
+                            "Back Button. Double Tap to navigate to Dashboard Screen."
+                        testTag = backButtonTag
                     })
             {
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back Button. Double Tap to navigate to Dashboard Screen.")
@@ -402,7 +431,10 @@ fun ProfileScreenTopBar(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .clickable { onDoneClicked() }
-                        .clearAndSetSemantics {  contentDescription = contentDescriptionForDoneButton })
+                        .clearAndSetSemantics {
+                            contentDescription = contentDescriptionForDoneButton
+                            testTag = doneButtonTag
+                        })
             }
         }
     }
