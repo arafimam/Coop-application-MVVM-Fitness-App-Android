@@ -18,7 +18,11 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 fun AppNavigation(sharedViewModel: SharedViewModel){
 
     val navController = rememberAnimatedNavController()
-    AnimatedNavHost(navController = navController, startDestination = Screens.DASHBOARD_SCREEN.name){
+    AnimatedNavHost(navController = navController, startDestination = Screens.LOGIN_SCREEN.name){
+
+        composable(route = Screens.LOGIN_SCREEN.name){
+            LoginPage(sharedViewModel = sharedViewModel, navController = navController)
+        }
 
         /**
          * Navigation for Signup Screen.

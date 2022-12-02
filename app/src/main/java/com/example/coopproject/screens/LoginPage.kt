@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.coopproject.R
+import com.example.coopproject.navigation.Screens
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
 
@@ -32,7 +33,7 @@ fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
                 //TODO: Firebase Forgot password func.
             },
             onSignUpClicked = {
-                //TODO: navigate to Sign up Screen.
+                navController.navigate(route = Screens.SIGNUP_SCREEN.name)
             }
         )
 }
