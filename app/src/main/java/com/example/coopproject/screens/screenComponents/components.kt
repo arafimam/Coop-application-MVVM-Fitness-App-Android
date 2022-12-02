@@ -370,7 +370,7 @@ fun UnitSelector(
     Row (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = PADDING_MEDIUM)
+            .padding(top = PADDING_MEDIUM, start = PADDING_MEDIUM, end = PADDING_MEDIUM)
             ){
 
         Button(onClick = {
@@ -379,14 +379,18 @@ fun UnitSelector(
             selectedIndex.value = 0
         }, shape = RoundedCornerShape(15.dp),
         colors = ButtonDefaults.buttonColors(colorOfButton1.value),
-            modifier = Modifier.padding(start = BIG_PADDING, end = PADDING_SMALL).clearAndSetSemantics {
-                contentDescription = "Button For ${items[0]}. Double tap to select."
-                testTag = testTagButton1
-            }
+            modifier = Modifier
+                .weight(4f)
+                .fillMaxWidth()
+                .clearAndSetSemantics {
+                    contentDescription = "Button For ${items[0]}. Double tap to select."
+                    testTag = testTagButton1
+                }
             ) {
 
-            Text(text = items[0])
+            Text(text = items[0], style = MaterialTheme.typography.button, maxLines = 1)
         }
+        Spacer(modifier = Modifier.width(5.dp))
 
         Button(onClick = {
             colorOfButton1.value = colorOfNotSelected
@@ -395,12 +399,15 @@ fun UnitSelector(
         },
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(colorOfButton2.value),
-            modifier = Modifier.padding(start = PADDING_SMALL, end = PADDING_MEDIUM).clearAndSetSemantics {
-                contentDescription = "Button For ${items[1]}. Double tap to select."
-                testTag = testTagButton2
-            }
+            modifier = Modifier
+                .weight(4f)
+                .fillMaxWidth()
+                .clearAndSetSemantics {
+                    contentDescription = "Button For ${items[1]}. Double tap to select."
+                    testTag = testTagButton2
+                }
         ) {
-            Text(text = " ${items[1]} ")
+            Text(text = items[1], style = MaterialTheme.typography.button, maxLines = 1)
         }
 
     }
@@ -437,12 +444,12 @@ fun ParameterWidget(
                 start = BIG_PADDING, end = BIG_PADDING
             )
             .fillMaxWidth()
-            .height(175.dp),
+            .height(140.dp),
         shape = RoundedCornerShape(15.dp),
 
         ){
         Column(
-            modifier = Modifier.padding(top = PADDING_MEDIUM),
+            modifier = Modifier.padding(top = PADDING_SMALL),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
@@ -452,10 +459,10 @@ fun ParameterWidget(
                     contentDescription = "$parameterType in $parameterUnit"
                     testTag = testTagForUnit
                     text = AnnotatedString(parameterUnit)
-                                      },
+                },
             horizontalAlignment = Alignment.CenterHorizontally){
                 Text(text = parameterType, color = Color.White,
-                    style = MaterialTheme.typography.h4)
+                    style = MaterialTheme.typography.h5 )
                 Text(text = parameterUnit, color = FadedTextColor,
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold
@@ -515,14 +522,8 @@ fun ParameterWidget(
         }
 
     }
-
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun PreView(){
-    UnitSelector(modifier = Modifier, sharedViewModel = viewModel(), getUnitSelected = {})
-}
 
 
 

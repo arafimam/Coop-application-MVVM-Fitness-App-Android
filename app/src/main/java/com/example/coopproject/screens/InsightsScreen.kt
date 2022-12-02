@@ -138,26 +138,26 @@ private fun WorkoutTextInfo(
 )
 {
 
-    Box(modifier = Modifier.padding(top = 30.dp),
+    Box(modifier = Modifier.padding(top = 15.dp),
     contentAlignment = Alignment.Center){
         Row(modifier = Modifier.padding(start = PADDING_NORMAL, end = PADDING_NORMAL)){
             Text(text = "$info", modifier = Modifier
-                .weight(7f)
+                .weight(6f)
                 .semantics { contentDescription = "$info" },
                 color = Color.White,
                 style = MaterialTheme.typography.body1)
             Card(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(2f)
                     .fillMaxWidth()
                     .height(30.dp),
                 backgroundColor = WorkoutTextBackgroundColor,
                 shape = RoundedCornerShape(15.dp)
             ){
                 Box(contentAlignment = Alignment.Center){
-                    Text(text = String.format("%d",value),style = MaterialTheme.typography.body1,
+                    Text(text = if (value< 10000){String.format("%d",value)} else {String.format("%dk",value/1000)},style = MaterialTheme.typography.body1,
                         modifier = Modifier.semantics { testTag = tagName;
-                        contentDescription = "$value"})
+                        contentDescription = "$value"}, maxLines = 1)
                 }
             }
         }
@@ -305,6 +305,7 @@ private fun TopBarInsightScreen(
 ){
     val testTagBackButton = stringResource(R.string.TestTagBackButton)
     TopAppBar(
+        modifier = Modifier.heightIn(min = MINIMUM_HEIGHT_TOP_APP_BAR,max = MAXIMUM_HEIGHT_TOP_APP_BAR),
         backgroundColor = AppThemeColor,
         content = {
             IconButton(onClick = { onBackClicked() }, modifier = Modifier.clearAndSetSemantics {

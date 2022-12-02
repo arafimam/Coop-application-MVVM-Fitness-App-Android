@@ -19,12 +19,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
 import com.example.coopproject.ui.theme.*
 import com.example.coopproject.utils.*
 import java.util.*
+import kotlin.math.min
 
 @Composable
 fun DashboardScreen(
@@ -271,6 +273,7 @@ private fun TopBar(
     if (exerciseInformation != null){
         if (exerciseInformation.day!= null){
             TopAppBar(
+                modifier = Modifier.heightIn(min = MAXIMUM_HEIGHT_TOP_APP_BAR,max = MAXIMUM_HEIGHT_TOP_APP_BAR),
                 title = { Box(modifier = Modifier.fillMaxWidth()){
                     if (exerciseInformation.day != null){
                         val contentDescriptionForDay = stringResource(id = getDayMap()[exerciseInformation.day!!]!!)
