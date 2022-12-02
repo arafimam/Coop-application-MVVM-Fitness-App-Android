@@ -1,5 +1,7 @@
 package com.example.coopproject.screens
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,11 +30,25 @@ import com.example.coopproject.ui.theme.*
 
 @Composable
 fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
+    val showToastMessage = remember {
+        mutableStateOf(false)
+    }
+    if (showToastMessage.value){
+        Toast.makeText(LocalContext.current,"Incorrect Email Address or password",Toast.LENGTH_SHORT).show()
+        showToastMessage.value = false
+    }
         LoginContents(
             onLoginClicked = {
+
                 email,
                 password
                 ->
+                Log.d("Exception","$email AND $password")
+                sharedViewModel.signInWithEmailAndPassword(email, password = password, successfulLogin = {
+                    navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
+                }, onUnsuccessfulLogin = {
+                    showToastMessage.value = true
+                })
 
             },
             onForgotPasswordClicked = {
@@ -42,6 +59,7 @@ fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
             }
         )
 }
+
 
 @Composable
 fun LoginContents(
@@ -66,7 +84,9 @@ fun LoginContents(
         content = {
             Column() {
                 UserForm(
-                    getEmailAddress = {email.value = it},
+                    getEmailAddress = {
+                        email.value = it
+                                      },
                     getPassword = {password.value = it},
                     modifier = Modifier.padding(top = TOP_PADDING_LARGE, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = TOP_PADDING_LARGE))
 

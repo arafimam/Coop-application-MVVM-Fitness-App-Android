@@ -37,7 +37,9 @@ fun SignUpScreen(navController: NavController,sharedViewModel: SharedViewModel){
                     email,
                     password
                 ->
-                // TODO: Firebase Signup
+                sharedViewModel.createUserWithEmailAndPassword(email,password, onSuccessfulSignUp = {
+                    navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
+                })
             },
                 goToLoginClicked = {navController.navigate(route = Screens.LOGIN_SCREEN.name)})
 

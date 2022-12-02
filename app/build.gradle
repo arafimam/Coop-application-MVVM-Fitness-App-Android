@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.example.to_docompose"
-        minSdk 21
-        targetSdk 30
+        minSdk 22
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 
@@ -103,6 +103,8 @@ dependencies {
     androidTestImplementation('androidx.test:rules:1.4.0')
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+    implementation platform('com.google.firebase:firebase-bom:29.0.0')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+
 
 }

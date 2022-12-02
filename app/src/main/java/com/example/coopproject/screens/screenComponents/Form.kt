@@ -45,6 +45,8 @@ fun UserForm(
     val password = remember {
         mutableStateOf("")
     }
+    getEmailAddress(emailAddress.value)
+    getPassword(password.value)
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Top

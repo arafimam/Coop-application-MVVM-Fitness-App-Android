@@ -20,7 +20,8 @@ fun AppNavigation(sharedViewModel: SharedViewModel){
     val navController = rememberAnimatedNavController()
     AnimatedNavHost(navController = navController, startDestination = Screens.LOGIN_SCREEN.name){
 
-        composable(route = Screens.LOGIN_SCREEN.name){
+        composable(route = Screens.LOGIN_SCREEN.name,enterTransition = {_,_,-> slideInHorizontally(animationSpec = tween(500))},
+            exitTransition = {_,_,-> slideOutHorizontally(animationSpec = tween(500))}){
             LoginPage(sharedViewModel = sharedViewModel, navController = navController)
         }
 
@@ -28,6 +29,8 @@ fun AppNavigation(sharedViewModel: SharedViewModel){
          * Navigation for Signup Screen.
          */
         composable(
+            enterTransition = {_,_,-> slideInHorizontally(animationSpec = tween(500))},
+            exitTransition = {_,_,-> slideOutHorizontally(animationSpec = tween(500))},
             route = Screens.SIGNUP_SCREEN.name
         ){
             SignUpScreen(navController = navController, sharedViewModel = sharedViewModel)
