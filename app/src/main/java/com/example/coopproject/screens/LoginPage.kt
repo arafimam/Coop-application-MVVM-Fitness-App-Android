@@ -7,6 +7,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -27,7 +29,10 @@ import com.example.coopproject.ui.theme.*
 fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
         LoginContents(
             onLoginClicked = {
-                //TODO: Firebase Auth
+                email,
+                password
+                ->
+
             },
             onForgotPasswordClicked = {
                 //TODO: Firebase Forgot password func.
@@ -40,10 +45,17 @@ fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
 
 @Composable
 fun LoginContents(
-    onLoginClicked: () -> Unit,
+    onLoginClicked: (String,String) -> Unit,
     onForgotPasswordClicked: () -> Unit,
     onSignUpClicked: () -> Unit
 ){
+    val email = remember {
+        mutableStateOf("")
+    }
+
+    val password = remember {
+        mutableStateOf("")
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         backgroundColor = AppBackGroundColor,
@@ -54,11 +66,11 @@ fun LoginContents(
         content = {
             Column() {
                 UserForm(
-                    getEmailAddress = {},
-                    getPassword = {},
+                    getEmailAddress = {email.value = it},
+                    getPassword = {password.value = it},
                     modifier = Modifier.padding(top = TOP_PADDING_LARGE, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = TOP_PADDING_LARGE))
 
-                Button(onClick = { onLoginClicked() },
+                Button(onClick = { onLoginClicked(email.value,password.value) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
@@ -152,8 +164,3 @@ fun LoginScreenTopBar(){
     }
 }
 
-@Preview
-@Composable
-fun LoginView(){
-    LoginContents({},{},{})
-}
