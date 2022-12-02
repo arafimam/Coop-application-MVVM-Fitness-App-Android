@@ -23,12 +23,26 @@ import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
 
 @Composable
-fun LoginPage(){
-
+fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
+        LoginContents(
+            onLoginClicked = {
+                //TODO: Firebase Auth
+            },
+            onForgotPasswordClicked = {
+                //TODO: Firebase Forgot password func.
+            },
+            onSignUpClicked = {
+                //TODO: navigate to Sign up Screen.
+            }
+        )
 }
 
 @Composable
-fun LoginContents(){
+fun LoginContents(
+    onLoginClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit,
+    onSignUpClicked: () -> Unit
+){
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         backgroundColor = AppBackGroundColor,
@@ -43,7 +57,7 @@ fun LoginContents(){
                     getPassword = {},
                     modifier = Modifier.padding(top = TOP_PADDING_LARGE, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = TOP_PADDING_LARGE))
 
-                Button(onClick = { /*TODO: FireBase Login here > Navigate to Dashboard Screen*/ },
+                Button(onClick = { onLoginClicked() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
@@ -75,7 +89,7 @@ fun LoginContents(){
                         modifier = Modifier
                             .padding(bottom = PADDING_SMALL)
                             .clickable {
-                                //TODO: Firebase Forgot Password.
+                                onForgotPasswordClicked()
                             }
                     )
                     Row(
@@ -95,7 +109,7 @@ fun LoginContents(){
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .clickable {
-                                    //TODO: Navigate to Sign Up Screen.
+                                    onSignUpClicked()
                                 }
                         )
                     }
@@ -115,7 +129,7 @@ fun LoginScreenTopBar(){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp),
+            .height(100.dp),
         backgroundColor = AppThemeColor,
         shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
     ){
@@ -140,5 +154,5 @@ fun LoginScreenTopBar(){
 @Preview
 @Composable
 fun LoginView(){
-    LoginContents()
+    LoginContents({},{},{})
 }
