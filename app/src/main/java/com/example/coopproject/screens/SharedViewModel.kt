@@ -62,6 +62,29 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
 
+
+    fun resetPasswordUsingEmail(email: String, onEmailSent: () -> Unit){
+        viewModelScope.launch {
+            try{
+                auth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener{
+                            task ->
+                        if (task.isSuccessful){
+                            onEmailSent()
+                            Log.d("EMAIL","EMAIL SENT")
+                        }else{
+                            Log.d("EMAIL","EMAIL NOT SENT")
+                        }
+                    }
+
+            }catch (exp: Exception){
+                Log.d("EXCEPTION","EXCEPTION")
+
+            }
+
+        }
+    }
+
     fun signInWithEmailAndPassword(email: String,password: String,successfulLogin: ()-> Unit,
     onUnsuccessfulLogin: () -> Unit){
         viewModelScope.launch {

@@ -43,23 +43,22 @@ fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
                 email,
                 password
                 ->
-                Log.d("Exception","$email AND $password")
                 sharedViewModel.signInWithEmailAndPassword(email, password = password, successfulLogin = {
                     navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
                 }, onUnsuccessfulLogin = {
                     showToastMessage.value = true
                 })
-
             },
             onForgotPasswordClicked = {
                 //TODO: Firebase Forgot password func.
+                                      navController.navigate(route = Screens.FORGOT_PASSWORD.name)
+
             },
             onSignUpClicked = {
                 navController.navigate(route = Screens.SIGNUP_SCREEN.name)
             }
         )
 }
-
 
 @Composable
 fun LoginContents(
