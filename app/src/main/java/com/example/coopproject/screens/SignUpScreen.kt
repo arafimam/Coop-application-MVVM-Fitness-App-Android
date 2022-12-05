@@ -74,7 +74,7 @@ fun SignUpForm(
 
         passwordChecker(password = password.value)
         Button(onClick = { signUpClicked(emailAddress.value,password.value) },
-            enabled = password.value.length > 6 && checkEmailAddress(emailAddress.value),
+            enabled = password.value.length >= 6 && checkEmailAddress(emailAddress.value),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(

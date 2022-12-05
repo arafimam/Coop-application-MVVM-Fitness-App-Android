@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
@@ -66,8 +67,31 @@ fun ForgotPasswordScreen(sharedViewModel: SharedViewModel,navController: NavCont
         },
         content = {
             Column(
-                modifier = Modifier.padding(top = TOP_PADDING_LARGE+ TOP_PADDING_LARGE, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_MEDIUM)
+                modifier = Modifier.padding(top = TOP_PADDING_LARGE, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_MEDIUM)
             ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = BIG_PADDING),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Text(
+                        text = "Forgot your password?",
+                        color = Color.White,
+                        style = MaterialTheme.typography.h6,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = PADDING_NORMAL)
+                    )
+                    Text(
+                        text = "Enter your email address and we will send",
+                        color = Color.White,
+                        fontSize = 15.sp,
+                    )
+                    Text(
+                        text = " you instructions to reset your password",
+                        color = Color.White,
+                        fontSize = 15.sp
+                    )
+                }
                 Text(
                     text = "Email Address",
                     color = Color.White,
