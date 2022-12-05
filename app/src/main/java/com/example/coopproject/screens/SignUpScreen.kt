@@ -16,14 +16,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.model.UserExerciseInformation
 import com.example.coopproject.model.UserInformation
 import com.example.coopproject.navigation.Screens
+import com.example.coopproject.screens.screenComponents.OrRow
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Brands
+import compose.icons.fontawesomeicons.brands.Facebook
+import compose.icons.fontawesomeicons.brands.Google
 
 @Composable
 fun SignUpScreen(navController: NavController,sharedViewModel: SharedViewModel){
@@ -66,11 +72,11 @@ fun SignUpForm(
         mutableStateOf("")
     }
 
-    Column() {
+    Column {
         UserForm(
             getEmailAddress = {emailAddress.value = it},
             getPassword = {password.value = it},
-            modifier = Modifier.padding(top = TOP_PADDING_LARGE, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_MEDIUM))
+            modifier = Modifier.padding(top = PADDING_MEDIUM, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_SMALL))
 
         passwordChecker(password = password.value)
         Button(onClick = { signUpClicked(emailAddress.value,password.value) },
@@ -78,10 +84,9 @@ fun SignUpForm(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    top = PADDING_SMALL,
                     start = PADDING_MEDIUM,
                     end = PADDING_MEDIUM,
-                    bottom = PADDING_MEDIUM
+                    bottom = SMALL_THICKNESS
                 ),
             colors = ButtonDefaults.buttonColors(LighterAppThemeColor, disabledBackgroundColor = FadedTextColor)
         ) {
@@ -89,42 +94,96 @@ fun SignUpForm(
                 text = "SignUp",
                 color = Color.White,
                 style = MaterialTheme.typography.button,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = PADDING_SMALL)
+                fontWeight = FontWeight.Bold
             )
         }
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = PADDING_SMALL),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = "Already a member?",
                     color = Color.White,
-                    style = MaterialTheme.typography.button,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp
 
                     )
                 Text(
                     text = " Click Here to Login",
                     color = LighterAppThemeColor,
-                    style = MaterialTheme.typography.button,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp,
                     modifier = Modifier
                         .clickable {
                             goToLoginClicked()
                         }
                 )
             }
+
+        }
+        OrRow()
+        Column(modifier = Modifier.padding(top = PADDING_SMALL ,start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_SMALL)) {
+           ContinueWithGoogleButton (continueWithGoogleClicked = {})
+            Spacer(modifier = Modifier.height(20.dp))
+            ContinueWithFacebookButton (continueWithFacebookClicked = {})
         }
     }
 
+}
+
+@Composable
+fun ContinueWithFacebookButton(
+    continueWithFacebookClicked: () -> Unit
+){
+    Button(onClick = { continueWithFacebookClicked() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                bottom = SMALL_THICKNESS
+            ),
+        colors = ButtonDefaults.buttonColors(LighterAppThemeColor, disabledBackgroundColor = FadedTextColor)
+    ){
+
+        Icon(imageVector = FontAwesomeIcons.Brands.Facebook, contentDescription = "Google Icon",
+            tint = Color.White, modifier = Modifier
+                .size(24.dp)
+                .weight(3f))
+        Text(text = "Sign Up With Facebook",
+            color = Color.White,
+            modifier = Modifier.weight(7f)
+        )
+    }
+}
+
+@Composable
+fun ContinueWithGoogleButton(
+    continueWithGoogleClicked: () -> Unit
+){
+    Button(onClick = { continueWithGoogleClicked() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                bottom = SMALL_THICKNESS
+            ),
+        colors = ButtonDefaults.buttonColors(LighterAppThemeColor, disabledBackgroundColor = FadedTextColor)
+    ){
+
+        Icon(imageVector = FontAwesomeIcons.Brands.Google, contentDescription = "Google Icon",
+        tint = Color.White, modifier = Modifier
+                .size(24.dp)
+                .weight(3f))
+        Text(text = "Sign Up With Google",
+        color = Color.White,
+            modifier = Modifier.weight(7f)
+        )
+    }
 }
 
 private fun checkEmailAddress(email: String): Boolean{
@@ -155,13 +214,17 @@ fun passwordChecker(password: String){
         color.value = IconColorForExerciseCard
     }
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = PADDING_SMALL),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ){
         Icon(painter = painterResource(id = image.value), contentDescription = "password",
         tint = color.value)
-        Text(text = "Password should at least be 6 characters.",color = color.value)
+        Text(text = "Password should at least be 6 characters.",
+            color = color.value,
+        fontSize = 15.sp)
     }
 }
 @Composable

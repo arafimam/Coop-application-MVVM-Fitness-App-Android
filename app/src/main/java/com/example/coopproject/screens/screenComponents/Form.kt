@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,10 +28,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.coopproject.ui.theme.AppThemeColor
-import com.example.coopproject.ui.theme.FadedTextColor
-import com.example.coopproject.ui.theme.LighterAppThemeColor
-import com.example.coopproject.ui.theme.PADDING_SMALL
+import androidx.compose.ui.unit.sp
+import com.example.coopproject.ui.theme.*
 
 @Composable
 fun UserForm(
@@ -54,26 +53,36 @@ fun UserForm(
         Text(
             text = "Email Address",
             color = Color.White,
-            style = MaterialTheme.typography.body1,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = PADDING_SMALL)
+            fontSize = 15.sp,
+            modifier = Modifier.padding(bottom = SMALL_THICKNESS)
         )
         TextField(
-            modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(5.dp)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White, RoundedCornerShape(5.dp))
+                .heightIn(
+                    min = MINIMUM_TEXT_FIELD_HEIGHT,
+                    max = MAXIMUM_TEXT_FIELD_HEIGHT
+                ),
             text = emailAddress.value,
             onTextChange = {emailAddress.value = it},
             icon = Icons.Default.Email,
             placeholder = "ABC@gmail.com")
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = "Password",
             color = Color.White,
-            style = MaterialTheme.typography.body1,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = PADDING_SMALL)
+            fontSize = 15.sp,
+            modifier = Modifier.padding(bottom = SMALL_THICKNESS)
         )
         PasswordTextField(
-            modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(5.dp)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White, RoundedCornerShape(5.dp))
+                .heightIn(
+                    min = MINIMUM_TEXT_FIELD_HEIGHT,
+                    max = MAXIMUM_TEXT_FIELD_HEIGHT
+                ),
             text = password.value,
             onTextChange = {password.value = it},
             placeholder = "Password")
@@ -177,9 +186,36 @@ fun TextField(
     )
 }
 
+@Composable
+fun OrRow(){
+    Row(modifier = Modifier.padding(start = PADDING_MEDIUM, end = PADDING_MEDIUM),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ){
+        Divider(
+            modifier = Modifier
+                .height(SMALL_THICKNESS).weight(4f),
+            color = LighterAppThemeColor
+        )
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(1f)){
+            Text(text = "OR",
+                color = Color.White,
+                fontSize = 13.sp,
+                )
+        }
+
+        Divider(
+            modifier = Modifier
+                .height(SMALL_THICKNESS).weight(4f),
+            color = LighterAppThemeColor
+        )
+    }
+}
+
+
 
 @Preview(showBackground = true)
 @Composable
 fun Preview(){
-    UserForm(getEmailAddress = {}, getPassword = {})
+    OrRow()
 }
