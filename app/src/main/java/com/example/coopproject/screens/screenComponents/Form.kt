@@ -143,9 +143,6 @@ fun PasswordTextField(
     )
 }
 
-
-
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TextField(
@@ -210,12 +207,4 @@ fun OrRow(){
             color = Color.White
         )
     }
-}
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun Preview(){
-    OrRow()
 }

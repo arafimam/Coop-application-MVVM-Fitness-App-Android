@@ -39,6 +39,7 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
     var signedUpUser: String = "Syed"
     var dummyData: String = repository.createExerciseDummyInformation();
     val currentDayInfo: ExerciseInformation? = getCurrentDaysExerciseInformation(dummyData)
+    var countryName = "Canada" // default is Canada
 
     /**
      * Data of user exercise from database.
@@ -52,16 +53,28 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
     private val _userInformation: MutableStateFlow<UserInformation?> = MutableStateFlow(null)
     val userInformation: StateFlow<UserInformation?> = _userInformation
 
-    var countryName = "Canada" // default is Canada
-
+    /**
+     * Date for storing notification time.
+     */
     private val _notifyTime: MutableStateFlow<Int?> = MutableStateFlow(null)
     val notifyTime : StateFlow<Int?> = _notifyTime
 
-
+    /**
+     * Data for using Firebase authentication.
+     */
     val auth: FirebaseAuth = Firebase.auth
+
+    /**
+     * todo: Use the loading parameter to create a loading screen.
+     */
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
 
+    /**
+     * Resets Password using email.
+     * @param email of the user
+     * @param onEmailSent, function called when successfully Linked Sent.
+     */
     fun resetPasswordUsingEmail(email: String, onEmailSent: () -> Unit){
         viewModelScope.launch {
             try{
@@ -78,12 +91,17 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
 
             }catch (exp: Exception){
                 Log.d("EXCEPTION","EXCEPTION")
-
             }
-
         }
     }
 
+    /**
+     * Signs in the user with email and password.
+     * @param email String
+     * @param password String
+     * @param successfulLogin, function called when sign in is successful
+     * @param onUnsuccessfulLogin, function called when sign in is not successful
+     */
     fun signInWithEmailAndPassword(email: String,password: String,successfulLogin: ()-> Unit,
     onUnsuccessfulLogin: () -> Unit){
         viewModelScope.launch {
@@ -103,10 +121,15 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
             }catch(exp: Exception){
                 Log.d("Exception","FIREBASE EXCEPTION DURING LOGIN: "+ exp.message)
             }
-
         }
     }
 
+    /**
+     * Create user with sign up credential.
+     * @param email String
+     * @param password String
+     * @param onSuccessfulSignUp, function called when login is successful
+     */
     fun createUserWithEmailAndPassword(email:String,password: String,onSuccessfulSignUp: () -> Unit){
         viewModelScope.launch {
             try{
@@ -126,15 +149,20 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
         }
     }
 
+    /**
+     * Signs out user
+     * @Frame_Condtion: auth.currentUser becomes null
+     */
     fun SignOutUser(){
         viewModelScope.launch {
             auth.signOut()
         }
     }
 
-
-
-
+    /**
+     * Gets notification Time from Room Database.
+     * @param userName of the user for whom we want to know the notification time.
+     */
     fun getNotifyHourTime (userName: String){
         viewModelScope.launch {
             repository.getNotifyHourTime(userName).collect {
@@ -143,13 +171,20 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
         }
     }
 
+    /**
+     * Updates user notification time.
+     * @param newTime new Notification Time
+     * @param userName of the user for whom a new notification time is required.
+     */
     fun updateNotifyHourTime(newTime: Int, userName: String){
         viewModelScope.launch (Dispatchers.IO) {
             repository.updateNotifyHourTime(newTime,userName)
         }
     }
+
     /**
-     * Get user information of @param name.
+     * Get user information of
+     * @param name String of the user we want to get information.
      */
     fun getUserInformation(name: String){
         viewModelScope.launch {
@@ -249,7 +284,6 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
     }
 
     fun getCurrentDaysExerciseInformation(exerciseData: String?) : ExerciseInformation?{
-
         var gson: Gson = Gson()
         val data: List<ExerciseInformation>? = gson.fromJson(exerciseData,object: TypeToken<List<ExerciseInformation>>() {}.type)
         if (data != null) {
@@ -262,5 +296,4 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
         }
         return null
     }
-
 }

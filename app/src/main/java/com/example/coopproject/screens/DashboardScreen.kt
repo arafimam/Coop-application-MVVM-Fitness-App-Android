@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
@@ -28,7 +27,6 @@ import com.example.coopproject.ui.theme.*
 import com.example.coopproject.utils.*
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.math.min
 
 @Composable
 fun DashboardScreen(
@@ -53,7 +51,7 @@ fun DashboardScreen(
         scaffoldState = scaffoldState,
         bottomBar = { BottomBar(navController = navController)},
         topBar = {
-            TopBar(exerciseInformation = currentDayExerciseInfo,
+            TopBarDashboardScreen(exerciseInformation = currentDayExerciseInfo,
             onNavigationIconClicked = {
                 scope.launch {
                     scaffoldState.drawerState.open()
@@ -313,7 +311,7 @@ private fun BottomBar(
 }
 
 @Composable
-private fun TopBar(
+private fun TopBarDashboardScreen(
     exerciseInformation: ExerciseInformation?,
     onNavigationIconClicked: () -> Unit
 ){
@@ -326,9 +324,9 @@ private fun TopBar(
                     Box(modifier = Modifier.fillMaxWidth()){
                         IconButton(onClick = {
                             onNavigationIconClicked()
-                        }, modifier = Modifier.align(Alignment.CenterStart)) {
+                        }, ) {
                             Icon(imageVector = Icons.Default.Menu, contentDescription = "Open Navigation Drawer.",
-                            tint = Color.White, modifier = Modifier.width(40.dp))
+                            tint = Color.White)
                         }
                     if (exerciseInformation.day != null){
                         val contentDescriptionForDay = stringResource(id = getDayMap()[exerciseInformation.day!!]!!)
