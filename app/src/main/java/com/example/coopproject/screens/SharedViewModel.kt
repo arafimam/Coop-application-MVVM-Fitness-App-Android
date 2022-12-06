@@ -58,10 +58,9 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
     val notifyTime : StateFlow<Int?> = _notifyTime
 
 
-    private val auth: FirebaseAuth = Firebase.auth
+    val auth: FirebaseAuth = Firebase.auth
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
-
 
     fun resetPasswordUsingEmail(email: String, onEmailSent: () -> Unit){
         viewModelScope.launch {
@@ -117,12 +116,19 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
                         if (task.isSuccessful){
                             onSuccessfulSignUp()
                         }else{
-                            Log.d("SIGNUP_ERROR","USER IS NOT SUCCESSFULLY LOGGED IN.")
+
+                            Log.d("SIGNUP_ERROR","USER IS NOT SUCCESSFULLY LOGGED IN. ${task.result}")
                         }
                     }
             }catch(exception: Exception){
                 Log.d("Exception","Exception caused during signup ${exception.message}")
             }
+        }
+    }
+
+    fun SignOutUser(){
+        viewModelScope.launch {
+            auth.signOut()
         }
     }
 

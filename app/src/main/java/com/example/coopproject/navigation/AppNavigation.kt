@@ -18,7 +18,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 fun AppNavigation(sharedViewModel: SharedViewModel){
 
     val navController = rememberAnimatedNavController()
-    AnimatedNavHost(navController = navController, startDestination = Screens.LOGIN_SCREEN.name){
+    AnimatedNavHost(navController = navController, startDestination = if (sharedViewModel.auth.currentUser== null) {Screens.LOGIN_SCREEN.name} else {Screens.DASHBOARD_SCREEN.name}){
 
         composable(route = Screens.LOGIN_SCREEN.name,enterTransition = {_,_,-> slideInHorizontally(animationSpec = tween(500))},
             exitTransition = {_,_,-> slideOutHorizontally(animationSpec = tween(500))}){

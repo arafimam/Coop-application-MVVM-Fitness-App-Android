@@ -22,9 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
+import com.example.coopproject.screens.screenComponents.OrRow
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
 
@@ -87,24 +89,24 @@ fun LoginContents(
                         email.value = it
                                       },
                     getPassword = {password.value = it},
-                    modifier = Modifier.padding(top = TOP_PADDING_LARGE, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = TOP_PADDING_LARGE))
+                    modifier = Modifier.padding(top = PADDING_MEDIUM, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_SMALL))
 
                 Button(onClick = { onLoginClicked(email.value,password.value) },
+                    enabled = email.value.isNotEmpty() && password.value.isNotEmpty(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
                             start = PADDING_MEDIUM,
                             end = PADDING_MEDIUM,
-                            bottom = PADDING_MEDIUM
+                            bottom = SMALL_THICKNESS
                         ),
-                    colors = ButtonDefaults.buttonColors(LighterAppThemeColor)
+                    colors = ButtonDefaults.buttonColors(LighterAppThemeColor, disabledBackgroundColor = FadedTextColor)
                     ) {
                     Text(
                         text = "Login",
                         color = Color.White,
                         style = MaterialTheme.typography.button,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = PADDING_SMALL)
                     )
                 }
 
@@ -116,8 +118,7 @@ fun LoginContents(
                     Text(
                         text = "Forgot Password?",
                         color = LighterAppThemeColor,
-                        style = MaterialTheme.typography.button,
-                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp,
                         modifier = Modifier
                             .padding(bottom = PADDING_SMALL)
                             .clickable {
@@ -125,20 +126,19 @@ fun LoginContents(
                             }
                     )
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = PADDING_SMALL)
                     ) {
                         Text(
-                            text = "New Member?",
+                            text = "New Member? Click Here to",
                             color = Color.White,
-                            style = MaterialTheme.typography.button,
-                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
 
                         )
                         Text(
-                            text = " Click Here to sign up.",
+                            text = " sign up.",
                             color = LighterAppThemeColor,
-                            style = MaterialTheme.typography.button,
-                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
                             modifier = Modifier
                                 .clickable {
                                     onSignUpClicked()
@@ -148,7 +148,12 @@ fun LoginContents(
                 }
 
 
-
+                OrRow()
+                Column(modifier = Modifier.padding(top = PADDING_SMALL ,start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_SMALL)) {
+                    ContinueWithGoogleButton (continueWithGoogleClicked = {})
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ContinueWithFacebookButton (continueWithFacebookClicked = {})
+                }
 
             }
 

@@ -195,7 +195,7 @@ fun OrRow(){
         Divider(
             modifier = Modifier
                 .height(SMALL_THICKNESS).weight(4f),
-            color = LighterAppThemeColor
+            color = Color.White
         )
         Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(1f)){
             Text(text = "OR",
@@ -207,7 +207,7 @@ fun OrRow(){
         Divider(
             modifier = Modifier
                 .height(SMALL_THICKNESS).weight(4f),
-            color = LighterAppThemeColor
+            color = Color.White
         )
     }
 }

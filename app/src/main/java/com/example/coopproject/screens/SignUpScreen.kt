@@ -155,7 +155,8 @@ fun ContinueWithFacebookButton(
             tint = Color.White, modifier = Modifier
                 .size(24.dp)
                 .weight(3f))
-        Text(text = "Sign Up With Facebook",
+        Text(text = "Continue With Facebook",
+            fontSize = 13.sp,
             color = Color.White,
             modifier = Modifier.weight(7f)
         )
@@ -179,7 +180,8 @@ fun ContinueWithGoogleButton(
         tint = Color.White, modifier = Modifier
                 .size(24.dp)
                 .weight(3f))
-        Text(text = "Sign Up With Google",
+        Text(text = "Continue With Google",
+            fontSize = 13.sp,
         color = Color.White,
             modifier = Modifier.weight(7f)
         )

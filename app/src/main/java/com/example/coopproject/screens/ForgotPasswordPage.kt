@@ -127,14 +127,10 @@ fun ForgotPasswordScreen(sharedViewModel: SharedViewModel,navController: NavCont
                         text = "Send Email",
                         color = Color.White,
                         style = MaterialTheme.typography.button,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = PADDING_SMALL)
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
-
-
-
         }
     )
 }
