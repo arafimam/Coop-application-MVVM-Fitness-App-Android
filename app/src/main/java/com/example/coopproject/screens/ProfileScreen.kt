@@ -22,7 +22,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.model.UserInformation
@@ -150,12 +153,12 @@ fun ProfileScreenBottomBar()
     val contentDescriptionForBottomAppBar = stringResource(R.string.warningText1Profile) +" "+ stringResource(R.string.warningText2Profile)
     val testTagMsg = stringResource(R.string.TestTagProfileScreenBottomBar)
     Card(modifier = Modifier
-            .fillMaxWidth()
-            .clearAndSetSemantics {
-                contentDescription = contentDescriptionForBottomAppBar
-                testTag = testTagMsg
-            }
-            .height(125.dp),
+        .fillMaxWidth()
+        .clearAndSetSemantics {
+            contentDescription = contentDescriptionForBottomAppBar
+            testTag = testTagMsg
+        }
+        .height(125.dp),
         shape = RoundedCornerShape(topEnd = TOP_PADDING_LARGE, topStart = TOP_PADDING_LARGE),
         backgroundColor = AppThemeColor){
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
@@ -252,7 +255,8 @@ fun ProfileScreenContent(
                     editMade.value = true
                 },
                     modifier = Modifier
-                        .background(Color.White, RoundedCornerShape(5.dp))
+                        .background(Color.White, RoundedCornerShape(5.dp)).fillMaxWidth().
+                            heightIn(min = MINIMUM_TEXT_FIELD_HEIGHT, max = MAXIMUM_TEXT_FIELD_HEIGHT)
                         .clearAndSetSemantics {
                             testTag = "userName"
                             contentDescription = contentDescriptionForUserName
@@ -261,7 +265,7 @@ fun ProfileScreenContent(
                 )
                 Divider(color = LighterAppThemeColor,
                     thickness = SMALL_THICKNESS,
-                    modifier = Modifier.padding(top = BIG_PADDING, bottom = BIG_PADDING) )
+                    modifier = Modifier.padding(top = PADDING_MEDIUM, bottom = PADDING_MEDIUM) )
                 /**
                  * Radio button row
                  */
@@ -355,7 +359,7 @@ fun ProfileScreenContent(
                 val testTagAge = stringResource(R.string.TestTagAge)
                 Card(modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp)
+                    .heightIn(min = MINIMUM_TEXT_FIELD_HEIGHT,max = MAXIMUM_TEXT_FIELD_HEIGHT)
                     .clearAndSetSemantics {
                         contentDescription =
                             "Current age is ${age.value}. Double tap to set of date of birth."
@@ -407,6 +411,7 @@ fun ProfileScreenTopBar(
     val backButtonTag = stringResource(id = R.string.TestTagBackButton)
     val doneButtonTag = stringResource(R.string.TestTagDoneButton)
     TopAppBar(
+        modifier = Modifier.heightIn(min = MINIMUM_HEIGHT_TOP_APP_BAR, max = MAXIMUM_HEIGHT_TOP_APP_BAR),
         backgroundColor = AppThemeColor,
         contentColor = Color.White
     ) {
@@ -423,7 +428,9 @@ fun ProfileScreenTopBar(
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back Button. Double Tap to navigate to Dashboard Screen.")
             }
 
-            Text(text = stringResource(R.string.ProfileScreenHeader), style = MaterialTheme.typography.h6, modifier = Modifier.align(Alignment.Center))
+            Text(text = stringResource(R.string.ProfileScreenHeader), modifier = Modifier
+                .align(Alignment.Center)
+                , style = MaterialTheme.typography.h6)
 
             if(showDoneButton){
                 Text(text = stringResource(R.string.DoneButtonText),
@@ -437,5 +444,13 @@ fun ProfileScreenTopBar(
                         })
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun view(){
+    ProfileScreenTopBar(showDoneButton = false, onBackClicked = { /*TODO*/ }) {
+        
     }
 }

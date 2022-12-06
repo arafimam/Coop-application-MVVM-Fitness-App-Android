@@ -38,8 +38,9 @@ fun ExercisesScreen(navController: NavController,sharedViewModel: SharedViewMode
 
     Scaffold (
         topBar = {
-            TopAppBar() {
+
                 TopAppBar(
+                    modifier = Modifier.heightIn(min = MINIMUM_HEIGHT_TOP_APP_BAR,max = MAXIMUM_HEIGHT_TOP_APP_BAR),
                     backgroundColor = AppBackGroundColor,
                     contentColor = Color.White
                 ) {
@@ -52,7 +53,7 @@ fun ExercisesScreen(navController: NavController,sharedViewModel: SharedViewMode
                             Alignment.Center))
                     }
                 }
-            }
+
         },
         content = {
             Surface(

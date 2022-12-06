@@ -24,7 +24,7 @@
     <string name="greeting2">This is your progress</string>
     <string name="greeting1">Hello</string>
     <string name="points_text">Points</string>
-    <string name="daysWorkedOut">Number of days worked out</string>
+    <string name="daysWorkedOut">Finished Workouts</string>
     <string name="daysNotWorkedout">Unfinished Workouts</string>
     <string name="bodyTypeButtonText">Check your body type</string>
 

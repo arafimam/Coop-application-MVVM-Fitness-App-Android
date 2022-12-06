@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
@@ -227,6 +228,7 @@ fun BMIScreenTopBar(
     onBackClicked: () -> Unit,
 ){
     TopAppBar(
+        modifier = Modifier.heightIn(min = MINIMUM_HEIGHT_TOP_APP_BAR, max = MAXIMUM_HEIGHT_TOP_APP_BAR),
         backgroundColor = AppThemeColor,
         contentColor = Color.White
     ) {

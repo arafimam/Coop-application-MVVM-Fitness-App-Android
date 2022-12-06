@@ -1,5 +1,10 @@
 package com.example.coopproject.screens
 
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coopproject.model.UserExerciseInformation
@@ -7,6 +12,11 @@ import com.example.coopproject.model.UserInformation
 import com.example.coopproject.model.UserInformationAndUserExerciseInformation
 import com.example.coopproject.repository.Repository
 import com.example.coopproject.utils.ExerciseInformation
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+
+
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -45,6 +56,84 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
 
     private val _notifyTime: MutableStateFlow<Int?> = MutableStateFlow(null)
     val notifyTime : StateFlow<Int?> = _notifyTime
+
+
+    val auth: FirebaseAuth = Firebase.auth
+    private val _loading = MutableLiveData(false)
+    val loading: LiveData<Boolean> = _loading
+
+    fun resetPasswordUsingEmail(email: String, onEmailSent: () -> Unit){
+        viewModelScope.launch {
+            try{
+                auth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener{
+                            task ->
+                        if (task.isSuccessful){
+                            onEmailSent()
+                            Log.d("EMAIL","EMAIL SENT")
+                        }else{
+                            Log.d("EMAIL","EMAIL NOT SENT")
+                        }
+                    }
+
+            }catch (exp: Exception){
+                Log.d("EXCEPTION","EXCEPTION")
+
+            }
+
+        }
+    }
+
+    fun signInWithEmailAndPassword(email: String,password: String,successfulLogin: ()-> Unit,
+    onUnsuccessfulLogin: () -> Unit){
+        viewModelScope.launch {
+            try{
+                auth.signInWithEmailAndPassword(email,password)
+                    .addOnCompleteListener{
+                        task ->
+                            if (task.isSuccessful){
+                                successfulLogin()
+                                //todo: navigate to dashboard screen.
+                            }
+                        else{
+                            onUnsuccessfulLogin()
+                            Log.d("LOGIN_ERROR","Login is not successful.")
+                            }
+                    }
+            }catch(exp: Exception){
+                Log.d("Exception","FIREBASE EXCEPTION DURING LOGIN: "+ exp.message)
+            }
+
+        }
+    }
+
+    fun createUserWithEmailAndPassword(email:String,password: String,onSuccessfulSignUp: () -> Unit){
+        viewModelScope.launch {
+            try{
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener{
+                            task ->
+                        if (task.isSuccessful){
+                            onSuccessfulSignUp()
+                        }else{
+
+                            Log.d("SIGNUP_ERROR","USER IS NOT SUCCESSFULLY LOGGED IN. ${task.result}")
+                        }
+                    }
+            }catch(exception: Exception){
+                Log.d("Exception","Exception caused during signup ${exception.message}")
+            }
+        }
+    }
+
+    fun SignOutUser(){
+        viewModelScope.launch {
+            auth.signOut()
+        }
+    }
+
+
+
 
     fun getNotifyHourTime (userName: String){
         viewModelScope.launch {

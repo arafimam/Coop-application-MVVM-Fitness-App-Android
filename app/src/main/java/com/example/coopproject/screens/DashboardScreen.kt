@@ -6,9 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,12 +17,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
+import com.example.coopproject.screens.screenComponents.DrawerBody
+import com.example.coopproject.screens.screenComponents.DrawerHeader
+import com.example.coopproject.screens.screenComponents.MenuItem
 import com.example.coopproject.ui.theme.*
 import com.example.coopproject.utils.*
+import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.math.min
 
 @Composable
 fun DashboardScreen(
@@ -42,10 +46,55 @@ fun DashboardScreen(
         userExerciseInformation?.exerciseInformation
     )
 
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+
     Scaffold(
+        scaffoldState = scaffoldState,
         bottomBar = { BottomBar(navController = navController)},
         topBar = {
-            TopBar(exerciseInformation = currentDayExerciseInfo)
+            TopBar(exerciseInformation = currentDayExerciseInfo,
+            onNavigationIconClicked = {
+                scope.launch {
+                    scaffoldState.drawerState.open()
+                }
+            })
+        },
+        drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
+        drawerContent = {
+                        DrawerHeader()
+            DrawerBody(items = listOf(
+                MenuItem(
+                    id = "About",
+                    title = "About Us",
+                    contentDescription = "Go to home screen",
+                    icon = Icons.Default.Person
+                ),
+                MenuItem(
+                    id = "settings",
+                    title = "Settings",
+                    contentDescription = "Go to settings screen",
+                    icon = Icons.Default.Settings
+                ),
+                MenuItem(
+                    id = "privacy",
+                    title = "Privacy Policy",
+                    contentDescription = "Get help",
+                    icon = Icons.Default.Info
+                ),
+                MenuItem(
+                    id = "log out",
+                    title = "Logout",
+                    contentDescription = "Get help",
+                    icon = Icons.Filled.ExitToApp
+                ),
+            ), onItemClick = {
+                if (it.id == "log out"){
+                    sharedViewModel.SignOutUser()
+                    navController.navigate(Screens.LOGIN_SCREEN.name)
+                }
+
+            })
         },
         content = {
             Surface(
@@ -265,13 +314,22 @@ private fun BottomBar(
 
 @Composable
 private fun TopBar(
-    exerciseInformation: ExerciseInformation?
+    exerciseInformation: ExerciseInformation?,
+    onNavigationIconClicked: () -> Unit
 ){
 
     if (exerciseInformation != null){
         if (exerciseInformation.day!= null){
             TopAppBar(
-                title = { Box(modifier = Modifier.fillMaxWidth()){
+                modifier = Modifier.heightIn(min = MAXIMUM_HEIGHT_TOP_APP_BAR,max = MAXIMUM_HEIGHT_TOP_APP_BAR),
+                title = {
+                    Box(modifier = Modifier.fillMaxWidth()){
+                        IconButton(onClick = {
+                            onNavigationIconClicked()
+                        }, modifier = Modifier.align(Alignment.CenterStart)) {
+                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Open Navigation Drawer.",
+                            tint = Color.White, modifier = Modifier.width(40.dp))
+                        }
                     if (exerciseInformation.day != null){
                         val contentDescriptionForDay = stringResource(id = getDayMap()[exerciseInformation.day!!]!!)
                         Text(text = stringResource(id = getDayMap()[exerciseInformation.day!!]!!), color = Color.White,
