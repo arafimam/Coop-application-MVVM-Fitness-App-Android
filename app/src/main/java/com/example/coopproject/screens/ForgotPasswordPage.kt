@@ -1,5 +1,6 @@
 package com.example.coopproject.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -32,6 +34,11 @@ fun ForgotPasswordScreen(sharedViewModel: SharedViewModel,navController: NavCont
     val emailAddress = remember {
         mutableStateOf("")
     }
+
+    val showForgotPasswordContent = remember {
+        mutableStateOf(true)
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         backgroundColor = AppBackGroundColor,
@@ -66,69 +73,106 @@ fun ForgotPasswordScreen(sharedViewModel: SharedViewModel,navController: NavCont
             }
         },
         content = {
-            Column(
-                modifier = Modifier.padding(top = TOP_PADDING_LARGE, start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_MEDIUM)
-            ) {
+
+            if (showForgotPasswordContent.value) {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = BIG_PADDING),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
+                    modifier = Modifier.padding(
+                        top = TOP_PADDING_LARGE,
+                        start = PADDING_MEDIUM,
+                        end = PADDING_MEDIUM,
+                        bottom = PADDING_MEDIUM
+                    )
                 ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = BIG_PADDING),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        Text(
+                            text = "Forgot your password?",
+                            color = Color.White,
+                            style = MaterialTheme.typography.h6,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = PADDING_NORMAL)
+                        )
+                        Text(
+                            text = "Enter your email address and we will send",
+                            color = Color.White,
+                            fontSize = 15.sp,
+                        )
+                        Text(
+                            text = " you instructions to reset your password",
+                            color = Color.White,
+                            fontSize = 15.sp
+                        )
+                    }
                     Text(
-                        text = "Forgot your password?",
+                        text = "Email Address",
+                        color = Color.White,
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = PADDING_SMALL)
+                    )
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White, RoundedCornerShape(5.dp)),
+                        text = emailAddress.value,
+                        onTextChange = { emailAddress.value = it },
+                        icon = Icons.Default.Email,
+                        placeholder = "ABC@gmail.com"
+                    )
+
+                    Button(
+                        onClick = {
+                            sharedViewModel.resetPasswordUsingEmail(
+                                email = emailAddress.value,
+                                onEmailSent = {
+                                    showForgotPasswordContent.value = false
+
+                                })
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = PADDING_MEDIUM,
+                                end = PADDING_MEDIUM,
+                                bottom = PADDING_MEDIUM,
+                                top = PADDING_MEDIUM
+                            ),
+                        colors = ButtonDefaults.buttonColors(LighterAppThemeColor)
+                    ) {
+                        Text(
+                            text = "Send Email",
+                            color = Color.White,
+                            style = MaterialTheme.typography.button,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+            //
+            if (!showForgotPasswordContent.value){
+                Column(
+                    modifier = Modifier.padding(
+                        top = TOP_PADDING_LARGE,
+                        start = PADDING_MEDIUM,
+                        end = PADDING_MEDIUM,
+                        bottom = PADDING_MEDIUM
+                    ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ){
+                    Text(
+                        text = "Email Sent to ${emailAddress.value}",
                         color = Color.White,
                         style = MaterialTheme.typography.h6,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = PADDING_NORMAL)
                     )
-                    Text(
-                        text = "Enter your email address and we will send",
-                        color = Color.White,
-                        fontSize = 15.sp,
-                    )
-                    Text(
-                        text = " you instructions to reset your password",
-                        color = Color.White,
-                        fontSize = 15.sp
-                    )
-                }
-                Text(
-                    text = "Email Address",
-                    color = Color.White,
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = PADDING_SMALL)
-                )
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(5.dp)),
-                    text = emailAddress.value,
-                    onTextChange = {emailAddress.value = it},
-                    icon = Icons.Default.Email,
-                    placeholder = "ABC@gmail.com")
-
-                Button(onClick = {
-                                 sharedViewModel.resetPasswordUsingEmail(email = emailAddress.value, onEmailSent = {
-
-                                 })
-                },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = PADDING_MEDIUM,
-                            end = PADDING_MEDIUM,
-                            bottom = PADDING_MEDIUM,
-                            top = PADDING_MEDIUM
-                        ),
-                    colors = ButtonDefaults.buttonColors(LighterAppThemeColor)
-                ) {
-                    Text(
-                        text = "Send Email",
-                        color = Color.White,
-                        style = MaterialTheme.typography.button,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Image(painter = painterResource(id = R.drawable.tickmark), contentDescription = "Tick mark.")
                 }
             }
         }

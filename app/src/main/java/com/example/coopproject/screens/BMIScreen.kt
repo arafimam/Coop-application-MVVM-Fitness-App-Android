@@ -61,7 +61,6 @@ fun BMIScreen(navController: NavController,sharedViewModel: SharedViewModel){
                      onBackClicked = {navController.navigate(Screens.INSIGHTS_SCREEN.name)}
                          )
         },
-
       content = {
           Surface(
               modifier = Modifier.fillMaxSize(),
@@ -219,8 +218,6 @@ fun BMIScreenBottomBar(
             }
         }
     }
-
-
 }
 
 @Composable
@@ -240,7 +237,5 @@ fun BMIScreenTopBar(
             Text(text = stringResource(R.string.BodyTypeHeader), style = MaterialTheme.typography.h6, modifier = Modifier.align(
                 Alignment.Center))
         }
-
-
     }
 }

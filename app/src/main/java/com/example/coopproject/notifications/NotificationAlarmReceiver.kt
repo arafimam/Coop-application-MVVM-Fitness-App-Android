@@ -35,8 +35,8 @@ class NotificationAlarmReceiver: BroadcastReceiver() {
         Log.d("Notification","Notification Triggered")
         val manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         // TODO: refactor strings to constants.kt
-        val channelName = "Reminder"
-        val channelId = "Reminder Id"
+        val channelName = ChannelInformationForNotification.Channel_NAME.name
+        val channelId = ChannelInformationForNotification.Channel_NAME.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channel = NotificationChannel(
@@ -55,6 +55,7 @@ class NotificationAlarmReceiver: BroadcastReceiver() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
 
+        // design the notification.
         val builder = NotificationCompat.Builder(context,channelId).
                 setContentTitle(title)
             .setContentText(description)
