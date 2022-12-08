@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
+import com.facebook.login.LoginManager
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(private val repository: Repository): ViewModel() {
@@ -167,7 +168,6 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
      * @Frame_Condtion: auth.currentUser becomes null
      */
     fun SignOutUser(context: Context){
-
         auth.signOut()
         val gso =
             GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -177,7 +177,9 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
 
         val googleSignInClient = GoogleSignIn.getClient(context, gso)
         googleSignInClient.signOut()
+        LoginManager.getInstance().logOut();
         }
+
 
 
     /**

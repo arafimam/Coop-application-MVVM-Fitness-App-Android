@@ -41,6 +41,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+//Facebook imports
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -48,6 +51,7 @@ class MainActivity : ComponentActivity() {
     companion object {
         const val RC_SIGN_IN = 100
     }
+
     private lateinit var googleSignInClient: GoogleSignInClient
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val sharedViewModel: SharedViewModel by viewModels()
@@ -55,12 +59,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        //initialize Facebook SDK
+        FacebookSdk.sdkInitialize(applicationContext);
 
         setContent {
             CoopProjectTheme {
@@ -82,50 +82,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // result returned from launching the intent from GoogleSignInApi.getSignInIntent()
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            val exception = task.exception
-            if (task.isSuccessful) {
-                try {
-                    // Google SignIn was successful, authenticate with Firebase
-                    val account = task.getResult(ApiException::class.java)!!
-                    firebaseAuthWithGoogle(account.idToken!!)
-                } catch (e: Exception) {
-                    // Google SignIn Failed
-                    Log.d("SignIn", "Google SignIn Failed")
-                }
-            } else {
-                Log.d("SignIn", exception.toString())
-            }
-        }
-
-    }
-
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        sharedViewModel.auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // SignIn Successful
-                    Log.d("ARAF","SUCCESS")
-
-
-                } else {
-                    // SignIn Failed
-                    Log.d("ARAF","FAILED")
-                }
-            }
     }
 
     /**

@@ -107,6 +107,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0'
+    implementation 'com.facebook.android:facebook-android-sdk:15.1.0'
 
     implementation("br.com.devsrsouza.compose.icons.android:font-awesome:1.0.0")
 

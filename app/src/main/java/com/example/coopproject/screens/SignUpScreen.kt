@@ -1,6 +1,6 @@
 package com.example.coopproject.screens
 
-import android.R.attr.data
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
@@ -24,19 +24,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.coopproject.FacebookUtils.FBLoginActivity
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
 import com.example.coopproject.screens.screenComponents.OrRow
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
-import com.google.android.gms.auth.api.identity.SignInCredential
+import com.facebook.AccessToken
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.brands.Facebook
@@ -105,6 +105,26 @@ fun SignUpForm(
     if (user != null){
         navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
     }
+
+    val context = LocalContext.current
+
+    val accessToken = AccessToken.getCurrentAccessToken()
+    val isLoggedIn by remember {
+        mutableStateOf(accessToken != null && !accessToken.isExpired)
+    }
+
+    val facebookSignRequest =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            //Log.d("DEBUGMSG",Activity.RESULT_OK.toString())
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val data = result.data?.extras?.getString(FBLoginActivity.EXTRA_DATA_FB)
+                //do something with data
+
+                navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
+
+
+            }
+        }
 
     Column {
         UserForm(
@@ -180,12 +200,20 @@ fun SignUpForm(
                //navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
 
            })
+
             Spacer(modifier = Modifier.height(20.dp))
-            ContinueWithFacebookButton (continueWithFacebookClicked = {})
+            ContinueWithFacebookButton (continueWithFacebookClicked = {
+                facebookSignRequest.launch(FBLoginActivity.getInstance(context))
+
+
+            })
         }
     }
 
 }
+
+
+
 
 @Composable
 fun rememberFirebaseAuthLauncher(
@@ -193,6 +221,7 @@ fun rememberFirebaseAuthLauncher(
     onAuthComplete: (AuthResult) -> Unit,
     onAuthError: (ApiException) -> Unit
 ): ManagedActivityResultLauncher<Intent, ActivityResult> {
+
     val scope = rememberCoroutineScope()
     return rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)

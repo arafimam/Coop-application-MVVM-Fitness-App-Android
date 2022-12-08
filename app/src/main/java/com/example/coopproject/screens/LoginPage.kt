@@ -1,7 +1,11 @@
 package com.example.coopproject.screens
 
+import android.app.Activity
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,11 +26,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.coopproject.FacebookUtils.FBLoginActivity
 import com.example.coopproject.R
 import com.example.coopproject.navigation.Screens
 import com.example.coopproject.screens.screenComponents.OrRow
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
+import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
@@ -96,6 +102,25 @@ fun LoginContents(
     if (user != null){
         navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
     }
+
+    val accessToken = AccessToken.getCurrentAccessToken()
+    val isLoggedIn by remember {
+        mutableStateOf(accessToken != null && !accessToken.isExpired)
+    }
+
+    val facebookSignRequest =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            //Log.d("DEBUGMSG",Activity.RESULT_OK.toString())
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val data = result.data?.extras?.getString(FBLoginActivity.EXTRA_DATA_FB)
+                //do something with data
+
+                navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
+
+
+            }
+        }
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -186,7 +211,9 @@ fun LoginContents(
                         launcher.launch(googleSignInClient.signInIntent)
                     })
                     Spacer(modifier = Modifier.height(20.dp))
-                    ContinueWithFacebookButton (continueWithFacebookClicked = {})
+                    ContinueWithFacebookButton (continueWithFacebookClicked = {
+                        facebookSignRequest.launch(FBLoginActivity.getInstance(context))
+                    })
                 }
 
             }
