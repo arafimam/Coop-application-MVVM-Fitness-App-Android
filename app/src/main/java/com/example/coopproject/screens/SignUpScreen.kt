@@ -1,35 +1,49 @@
 package com.example.coopproject.screens
 
+import android.R.attr.data
+import android.content.Context
+import android.content.Intent
 import android.text.TextUtils
+import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.coopproject.R
-import com.example.coopproject.model.UserExerciseInformation
-import com.example.coopproject.model.UserInformation
 import com.example.coopproject.navigation.Screens
 import com.example.coopproject.screens.screenComponents.OrRow
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
+import com.google.android.gms.auth.api.identity.SignInCredential
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.brands.Facebook
 import compose.icons.fontawesomeicons.brands.Google
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+
 
 @Composable
 fun SignUpScreen(navController: NavController,sharedViewModel: SharedViewModel){
@@ -51,7 +65,8 @@ fun SignUpScreen(navController: NavController,sharedViewModel: SharedViewModel){
                     navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
                 })
             },
-                goToLoginClicked = {navController.navigate(route = Screens.LOGIN_SCREEN.name)})
+                goToLoginClicked = {navController.navigate(route = Screens.LOGIN_SCREEN.name)}, sharedViewModel = sharedViewModel,
+            navController = navController)
 
         }
             )
@@ -60,9 +75,24 @@ fun SignUpScreen(navController: NavController,sharedViewModel: SharedViewModel){
 
 @Composable
 fun SignUpForm(
+    navController: NavController,
+    sharedViewModel: SharedViewModel,
     signUpClicked: (String,String) -> Unit, // get the email and password
     goToLoginClicked: () -> Unit
 ){
+    var user by remember { mutableStateOf(sharedViewModel.auth.currentUser) }
+    val launcher = rememberFirebaseAuthLauncher(
+        onAuthComplete = {
+                result ->
+            user = result.user
+
+        },
+        onAuthError = {
+            user = null
+            Log.d("AuthComplete","Auth Fail")
+        },
+        sharedViewModel = sharedViewModel
+    )
 
     val emailAddress = remember {
         mutableStateOf("")
@@ -70,6 +100,10 @@ fun SignUpForm(
 
     val password = remember {
         mutableStateOf("")
+    }
+
+    if (user != null){
+        navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
     }
 
     Column {
@@ -128,14 +162,52 @@ fun SignUpForm(
             }
 
         }
+        val context: Context = LocalContext.current
         OrRow()
         Column(modifier = Modifier.padding(top = PADDING_SMALL ,start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_SMALL)) {
-           ContinueWithGoogleButton (continueWithGoogleClicked = {})
+           ContinueWithGoogleButton (continueWithGoogleClicked = {
+
+               val gso =
+                   GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                       .requestIdToken("116444876397-do0tbrpj5j042lafrriutn22ntdhf0lr.apps.googleusercontent.com")
+                       .requestEmail()
+                       .build()
+
+               val googleSignInClient = GoogleSignIn.getClient(context, gso)
+
+               launcher.launch(googleSignInClient.signInIntent)
+
+               //navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
+
+           })
             Spacer(modifier = Modifier.height(20.dp))
             ContinueWithFacebookButton (continueWithFacebookClicked = {})
         }
     }
 
+}
+
+@Composable
+fun rememberFirebaseAuthLauncher(
+    sharedViewModel: SharedViewModel,
+    onAuthComplete: (AuthResult) -> Unit,
+    onAuthError: (ApiException) -> Unit
+): ManagedActivityResultLauncher<Intent, ActivityResult> {
+    val scope = rememberCoroutineScope()
+    return rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.getResult(ApiException::class.java)!!
+            val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
+            scope.launch {
+                Log.d("CREDENTIAL","${account.email} & ${account.idToken}")
+                val authResult = sharedViewModel.auth.signInWithCredential(credential).await()
+                onAuthComplete(authResult)
+            }
+        } catch (e: ApiException) {
+            onAuthError(e)
+        }
+    }
 }
 
 @Composable
@@ -252,6 +324,7 @@ fun SignUpTopBar(){
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

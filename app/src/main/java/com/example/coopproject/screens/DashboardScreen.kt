@@ -1,5 +1,6 @@
 package com.example.coopproject.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,6 +48,7 @@ fun DashboardScreen(
 
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -88,7 +91,7 @@ fun DashboardScreen(
                 ),
             ), onItemClick = {
                 if (it.id == "log out"){
-                    sharedViewModel.SignOutUser()
+                    sharedViewModel.SignOutUser(context)
                     navController.navigate(Screens.LOGIN_SCREEN.name)
                 }
 

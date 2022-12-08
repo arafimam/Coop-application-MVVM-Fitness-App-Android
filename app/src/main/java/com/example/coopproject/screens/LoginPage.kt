@@ -8,9 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -29,6 +27,8 @@ import com.example.coopproject.navigation.Screens
 import com.example.coopproject.screens.screenComponents.OrRow
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 @Composable
 fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
@@ -58,16 +58,34 @@ fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
             },
             onSignUpClicked = {
                 navController.navigate(route = Screens.SIGNUP_SCREEN.name)
-            }
+            },
+            sharedViewModel = sharedViewModel,
+            navController = navController
         )
 }
 
 @Composable
 fun LoginContents(
+    navController: NavController,
+    sharedViewModel: SharedViewModel,
     onLoginClicked: (String,String) -> Unit,
     onForgotPasswordClicked: () -> Unit,
     onSignUpClicked: () -> Unit
 ){
+    var user by remember { mutableStateOf(sharedViewModel.auth.currentUser) }
+    val launcher = rememberFirebaseAuthLauncher(
+        onAuthComplete = {
+                result ->
+            user = result.user
+
+        },
+        onAuthError = {
+            user = null
+            Log.d("AuthComplete","Auth Fail")
+        },
+        sharedViewModel = sharedViewModel
+    )
+
     val email = remember {
         mutableStateOf("")
     }
@@ -75,6 +93,10 @@ fun LoginContents(
     val password = remember {
         mutableStateOf("")
     }
+    if (user != null){
+        navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         backgroundColor = AppBackGroundColor,
@@ -148,9 +170,21 @@ fun LoginContents(
                 }
 
 
+
+                val context = LocalContext.current
                 OrRow()
                 Column(modifier = Modifier.padding(top = PADDING_SMALL ,start = PADDING_MEDIUM, end = PADDING_MEDIUM, bottom = PADDING_SMALL)) {
-                    ContinueWithGoogleButton (continueWithGoogleClicked = {})
+                    ContinueWithGoogleButton (continueWithGoogleClicked = {
+                        val gso =
+                            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestIdToken("116444876397-do0tbrpj5j042lafrriutn22ntdhf0lr.apps.googleusercontent.com")
+                                .requestEmail()
+                                .build()
+
+                        val googleSignInClient = GoogleSignIn.getClient(context, gso)
+
+                        launcher.launch(googleSignInClient.signInIntent)
+                    })
                     Spacer(modifier = Modifier.height(20.dp))
                     ContinueWithFacebookButton (continueWithFacebookClicked = {})
                 }

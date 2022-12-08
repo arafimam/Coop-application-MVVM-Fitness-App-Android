@@ -1,17 +1,28 @@
 package com.example.coopproject.screens
 
+import android.app.Activity
+import android.content.Context
+import android.provider.Settings.Global.getString
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.coopproject.MainActivity
+import com.example.coopproject.R
+
 import com.example.coopproject.model.UserExerciseInformation
 import com.example.coopproject.model.UserInformation
-import com.example.coopproject.model.UserInformationAndUserExerciseInformation
+
 import com.example.coopproject.repository.Repository
 import com.example.coopproject.utils.ExerciseInformation
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -21,7 +32,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -63,6 +74,7 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
      * Data for using Firebase authentication.
      */
     val auth: FirebaseAuth = Firebase.auth
+
 
     /**
      * todo: Use the loading parameter to create a loading screen.
@@ -149,15 +161,24 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
         }
     }
 
+
     /**
      * Signs out user
      * @Frame_Condtion: auth.currentUser becomes null
      */
-    fun SignOutUser(){
-        viewModelScope.launch {
-            auth.signOut()
+    fun SignOutUser(context: Context){
+
+        auth.signOut()
+        val gso =
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("116444876397-do0tbrpj5j042lafrriutn22ntdhf0lr.apps.googleusercontent.com")
+                .requestEmail()
+                .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(context, gso)
+        googleSignInClient.signOut()
         }
-    }
+
 
     /**
      * Gets notification Time from Room Database.
@@ -170,6 +191,7 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
             }
         }
     }
+
 
     /**
      * Updates user notification time.

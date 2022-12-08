@@ -107,6 +107,9 @@
     <string name="TestTagRetryButton">TestTagRetryButton</string>
     <string name="TestTagDoneButtonExercise">TestTagDoneButton</string>
     <string name="TestTagFinishExerciseButton">TestTagFinishExerciseButton</string>
+    
+    <string name="clientID">116444876397-do0tbrpj5j042lafrriutn22ntdhf0lr.apps.googleusercontent.com</string>
+    <string name="clientSecret">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</string>
 
 
 </resources>
