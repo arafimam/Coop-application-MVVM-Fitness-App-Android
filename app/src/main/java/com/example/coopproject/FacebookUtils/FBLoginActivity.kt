@@ -64,10 +64,8 @@ class FBLoginActivity : ComponentActivity() {
     }
 
     companion object {
-
         const val RESULT_ERROR = 102
         const val EXTRA_DATA_FB = "extraDataFb"
-
         fun getInstance(context: Context): Intent {
             return Intent(context, FBLoginActivity::class.java)
         }

@@ -19,6 +19,7 @@ import com.example.coopproject.model.UserInformation
 
 import com.example.coopproject.repository.Repository
 import com.example.coopproject.utils.ExerciseInformation
+import com.example.coopproject.utils.getOwnerNameFromEmail
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -45,10 +46,16 @@ import com.facebook.login.LoginManager
 @HiltViewModel
 class SharedViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
+
+    /**
+     * Data for using Firebase authentication.
+     */
+    val auth: FirebaseAuth = Firebase.auth
+
     /**
      * Dummy data for testing purposes.
      */
-    var signedUpUser: String = "Syed"
+    var signedUpUser: String? = if (auth.currentUser?.email != null) {getOwnerNameFromEmail(auth.currentUser?.email!!)} else {"Syed"}
     var dummyData: String = repository.createExerciseDummyInformation();
     val currentDayInfo: ExerciseInformation? = getCurrentDaysExerciseInformation(dummyData)
     var countryName = "Canada" // default is Canada
@@ -68,14 +75,8 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
     /**
      * Date for storing notification time.
      */
-    private val _notifyTime: MutableStateFlow<Int?> = MutableStateFlow(null)
+    private val _notifyTime: MutableStateFlow<Int?> = MutableStateFlow(8) // 8 by default
     val notifyTime : StateFlow<Int?> = _notifyTime
-
-    /**
-     * Data for using Firebase authentication.
-     */
-    val auth: FirebaseAuth = Firebase.auth
-
 
     /**
      * todo: Use the loading parameter to create a loading screen.

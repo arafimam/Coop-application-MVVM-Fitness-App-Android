@@ -70,7 +70,9 @@ class MainActivity : ComponentActivity() {
                 )
                 {
                     LaunchedEffect(key1 = true){
-                        sharedViewModel.getNotifyHourTime(sharedViewModel.signedUpUser)
+                        if (sharedViewModel.signedUpUser != null){
+                            sharedViewModel.getNotifyHourTime(sharedViewModel.signedUpUser!!)
+                        }
                     }
                     val notifyTime by sharedViewModel.notifyTime.collectAsState()
                     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)

@@ -42,7 +42,7 @@ fun ProfileScreen(
 {
 
     LaunchedEffect(key1 = true){
-        sharedViewModel.getUserInformation(sharedViewModel.signedUpUser)
+        sharedViewModel.getUserInformation(sharedViewModel.signedUpUser!!)
     }
     val userInfo by sharedViewModel.userInformation.collectAsState()
     val username = remember {

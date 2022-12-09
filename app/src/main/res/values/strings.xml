@@ -108,7 +108,12 @@
     <string name="TestTagDoneButtonExercise">TestTagDoneButton</string>
     <string name="TestTagFinishExerciseButton">TestTagFinishExerciseButton</string>
     
+    <string name="clientID">116444876397-do0tbrpj5j042lafrriutn22ntdhf0lr.apps.googleusercontent.com</string>
+    <string name="clientSecret">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</string>
 
+    <string name="facebook_app_id">542065874437644</string>
+    <string name="fb_login_protocol_scheme">fb542065874437644</string>
+    <string name="facebook_client_token">13d0431ec75a2045baa8da8dde218f5a</string>
 
 
 </resources>

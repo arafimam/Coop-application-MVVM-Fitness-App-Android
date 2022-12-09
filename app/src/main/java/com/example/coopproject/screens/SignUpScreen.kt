@@ -26,10 +26,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coopproject.FacebookUtils.FBLoginActivity
 import com.example.coopproject.R
+import com.example.coopproject.model.UserExerciseInformation
+import com.example.coopproject.model.UserInformation
 import com.example.coopproject.navigation.Screens
 import com.example.coopproject.screens.screenComponents.OrRow
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
+import com.example.coopproject.utils.getOwnerNameFromEmail
 import com.facebook.AccessToken
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -61,9 +64,18 @@ fun SignUpScreen(navController: NavController,sharedViewModel: SharedViewModel){
                     email,
                     password
                 ->
+                //Store user info in room database.
+                sharedViewModel.insertUserExerciseInformation(UserExerciseInformation(ownerName = getOwnerNameFromEmail(email)!!,
+                exerciseInformation = sharedViewModel.dummyData, finishedWorkout = 0, unfinishedWorkout = 0))
+                sharedViewModel.signedUpUser = getOwnerNameFromEmail(email = email)
+                // create user in firebase authentication and navigate to Dashboard screen
                 sharedViewModel.createUserWithEmailAndPassword(email,password, onSuccessfulSignUp = {
+                    //todo: navigate to another screen for user onboarding. For now temporary soln. is to put dummy data.
+                    sharedViewModel.signupUser(UserInformation(userName = getOwnerNameFromEmail(email = email)!!, email = email, password = "DummyPassword",
+                    gender = "Male", age = 21, bodyType = "Lean"))
                     navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
                 })
+
             },
                 goToLoginClicked = {navController.navigate(route = Screens.LOGIN_SCREEN.name)}, sharedViewModel = sharedViewModel,
             navController = navController)
@@ -85,7 +97,6 @@ fun SignUpForm(
         onAuthComplete = {
                 result ->
             user = result.user
-
         },
         onAuthError = {
             user = null

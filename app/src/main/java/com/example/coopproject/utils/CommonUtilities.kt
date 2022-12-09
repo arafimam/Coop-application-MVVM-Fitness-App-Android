@@ -176,3 +176,16 @@ fun getContentDescriptionOfImage(exerciseName: String): String{
         "Image showing a person exercising."
     }
 }
+
+/**
+ * Gets owner name from email address
+ * @param email String
+ * @return ownername (For ex. email - xyz@gmail.com then owner name = xyz)
+ */
+fun getOwnerNameFromEmail(email: String): String?{
+    if (email == null){
+        return  null;
+    }
+    val partsOfString = email.split("@")
+    return partsOfString[0]
+}
