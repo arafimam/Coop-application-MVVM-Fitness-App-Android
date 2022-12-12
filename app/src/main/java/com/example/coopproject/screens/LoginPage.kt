@@ -32,6 +32,7 @@ import com.example.coopproject.navigation.Screens
 import com.example.coopproject.screens.screenComponents.OrRow
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
+import com.example.coopproject.utils.getOwnerNameFromEmail
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -51,7 +52,9 @@ fun LoginPage(sharedViewModel: SharedViewModel,navController: NavController){
                 email,
                 password
                 ->
+
                 sharedViewModel.signInWithEmailAndPassword(email, password = password, successfulLogin = {
+                    sharedViewModel.signedUpUser = getOwnerNameFromEmail(email);
                     navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
                 }, onUnsuccessfulLogin = {
                     showToastMessage.value = true
@@ -116,8 +119,6 @@ fun LoginContents(
                 //do something with data
 
                 navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
-
-
             }
         }
 

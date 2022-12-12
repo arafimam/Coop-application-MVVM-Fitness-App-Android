@@ -40,6 +40,7 @@ fun DashboardScreen(
     // Fetch user information to be used throughout the dashboard screen.
     LaunchedEffect(key1 = true){
         sharedViewModel.getUserExerciseInformation(signedUpUser!!)
+        sharedViewModel.getUserInformation(signedUpUser!!)
     }
     val userExerciseInformation by sharedViewModel.userExerciseInfoData.collectAsState()
     val currentDayExerciseInfo: ExerciseInformation? = sharedViewModel.getCurrentDaysExerciseInformation(

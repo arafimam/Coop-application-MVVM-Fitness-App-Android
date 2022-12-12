@@ -241,6 +241,21 @@ fun rememberFirebaseAuthLauncher(
             val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
             scope.launch {
                 Log.d("CREDENTIAL","${account.email} & ${account.idToken}")
+                sharedViewModel.insertUserExerciseInformation(
+                    UserExerciseInformation(
+                    ownerName = getOwnerNameFromEmail(account.email!!)!!,
+                        exerciseInformation = sharedViewModel.dummyData,
+                        finishedWorkout = 0,
+                        unfinishedWorkout = 0
+                )
+                )
+
+                //todo: requires a onboarding screen
+                sharedViewModel.signupUser(UserInformation(userName = getOwnerNameFromEmail(email = account.email!!)!!,
+                age = 22, email = account.email!!, password = "DUMMYPASSWORD", gender = "Male", bodyType = "Male"))
+
+                sharedViewModel.signedUpUser = getOwnerNameFromEmail(email = account.email!!)
+
                 val authResult = sharedViewModel.auth.signInWithCredential(credential).await()
                 onAuthComplete(authResult)
             }
