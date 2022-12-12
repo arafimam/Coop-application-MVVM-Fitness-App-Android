@@ -56,6 +56,7 @@ class SharedViewModel @Inject constructor(private val repository: Repository): V
      * Dummy data for testing purposes.
      */
     var signedUpUser: String? = if (auth.currentUser?.email != null) {getOwnerNameFromEmail(auth.currentUser?.email!!)} else {"Syed"}
+        //"Syed"
     var dummyData: String = repository.createExerciseDummyInformation();
     val currentDayInfo: ExerciseInformation? = getCurrentDaysExerciseInformation(dummyData)
     var countryName = "Canada" // default is Canada

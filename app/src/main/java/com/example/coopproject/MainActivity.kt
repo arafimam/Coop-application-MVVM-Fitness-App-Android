@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
                     fetchLocation()
                     if (notifyTime!=null){
-                        setAlarm(context = LocalContext.current, timeHour = notifyTime!!)
+                       setAlarm(context = LocalContext.current, timeHour = notifyTime!!)
                     }
                     AppNavigation(sharedViewModel = sharedViewModel)
                 }

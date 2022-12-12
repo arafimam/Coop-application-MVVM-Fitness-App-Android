@@ -65,17 +65,13 @@ fun SignUpScreen(navController: NavController,sharedViewModel: SharedViewModel){
                     password
                 ->
                 //Store user info in room database.
-                sharedViewModel.insertUserExerciseInformation(UserExerciseInformation(ownerName = getOwnerNameFromEmail(email)!!,
-                exerciseInformation = sharedViewModel.dummyData, finishedWorkout = 0, unfinishedWorkout = 0))
+
                 sharedViewModel.signedUpUser = getOwnerNameFromEmail(email = email)
                 // create user in firebase authentication and navigate to Dashboard screen
                 sharedViewModel.createUserWithEmailAndPassword(email,password, onSuccessfulSignUp = {
                     //todo: navigate to another screen for user onboarding. For now temporary soln. is to put dummy data.
-                    sharedViewModel.signupUser(UserInformation(userName = getOwnerNameFromEmail(email = email)!!, email = email, password = "DummyPassword",
-                    gender = "Male", age = 21, bodyType = "Lean"))
-                    navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
+                    navController.navigate(route = Screens.ONBOARDING_SCREEN.name + "/${email}")
                 })
-
             },
                 goToLoginClicked = {navController.navigate(route = Screens.LOGIN_SCREEN.name)}, sharedViewModel = sharedViewModel,
             navController = navController)
@@ -132,8 +128,6 @@ fun SignUpForm(
                 //do something with data
 
                 navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
-
-
             }
         }
 

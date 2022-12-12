@@ -25,6 +25,13 @@ fun AppNavigation(sharedViewModel: SharedViewModel){
             LoginPage(sharedViewModel = sharedViewModel, navController = navController)
         }
 
+
+        composable(route = Screens.ONBOARDING_SCREEN.name + "/{email}",enterTransition = {_,_,-> slideInHorizontally(animationSpec = tween(500))},
+            exitTransition = {_,_,-> slideOutHorizontally(animationSpec = tween(500))}){
+            val email = it.arguments?.getString("email")
+            OnBoardingScreen(sharedViewModel = sharedViewModel, navController = navController, emailOfUser = email!!)
+        }
+
         composable(route = Screens.FORGOT_PASSWORD.name,enterTransition = {_,_,-> slideInHorizontally(animationSpec = tween(500))},
             exitTransition = {_,_,-> slideOutHorizontally(animationSpec = tween(500))}){
             ForgotPasswordScreen(sharedViewModel = sharedViewModel, navController = navController)

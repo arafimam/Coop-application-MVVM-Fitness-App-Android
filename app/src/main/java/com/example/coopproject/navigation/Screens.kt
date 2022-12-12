@@ -8,5 +8,6 @@ enum class Screens {
     PROFILE_SCREEN,
     INSIGHTS_SCREEN,
     EXERCISES_SCREEN,
-    BMI_SCREEN
+    BMI_SCREEN,
+    ONBOARDING_SCREEN
 }
