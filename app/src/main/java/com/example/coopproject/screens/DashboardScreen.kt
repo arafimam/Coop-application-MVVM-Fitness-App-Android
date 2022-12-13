@@ -34,12 +34,13 @@ import java.util.*
 fun DashboardScreen(
     navController: NavController,
     sharedViewModel: SharedViewModel,
-    signedUpUser: String = sharedViewModel.signedUpUser
+    signedUpUser: String? = sharedViewModel.signedUpUser
 ){
 
     // Fetch user information to be used throughout the dashboard screen.
     LaunchedEffect(key1 = true){
-        sharedViewModel.getUserExerciseInformation(signedUpUser)
+        sharedViewModel.getUserExerciseInformation(signedUpUser!!)
+        sharedViewModel.getUserInformation(signedUpUser!!)
     }
     val userExerciseInformation by sharedViewModel.userExerciseInfoData.collectAsState()
     val currentDayExerciseInfo: ExerciseInformation? = sharedViewModel.getCurrentDaysExerciseInformation(
@@ -114,7 +115,7 @@ fun DashboardScreen(
                                 //update Notify hour time
                                 val calendar: Calendar = Calendar.getInstance()
                                 sharedViewModel.updateNotifyHourTime(newTime = calendar.get(Calendar.HOUR_OF_DAY),
-                                    userName = sharedViewModel.signedUpUser)
+                                    userName = sharedViewModel.signedUpUser!!)
                                 navController.navigate(route = Screens.EXERCISES_SCREEN.name)
                             }
                         )

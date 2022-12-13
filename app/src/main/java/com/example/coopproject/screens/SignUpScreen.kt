@@ -26,10 +26,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coopproject.FacebookUtils.FBLoginActivity
 import com.example.coopproject.R
+import com.example.coopproject.model.UserExerciseInformation
+import com.example.coopproject.model.UserInformation
 import com.example.coopproject.navigation.Screens
 import com.example.coopproject.screens.screenComponents.OrRow
 import com.example.coopproject.screens.screenComponents.UserForm
 import com.example.coopproject.ui.theme.*
+import com.example.coopproject.utils.getOwnerNameFromEmail
 import com.facebook.AccessToken
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -61,8 +64,13 @@ fun SignUpScreen(navController: NavController,sharedViewModel: SharedViewModel){
                     email,
                     password
                 ->
+                //Store user info in room database.
+
+                sharedViewModel.signedUpUser = getOwnerNameFromEmail(email = email)
+                // create user in firebase authentication and navigate to Dashboard screen
                 sharedViewModel.createUserWithEmailAndPassword(email,password, onSuccessfulSignUp = {
-                    navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
+                    //todo: navigate to another screen for user onboarding. For now temporary soln. is to put dummy data.
+                    navController.navigate(route = Screens.ONBOARDING_SCREEN.name + "/${email}")
                 })
             },
                 goToLoginClicked = {navController.navigate(route = Screens.LOGIN_SCREEN.name)}, sharedViewModel = sharedViewModel,
@@ -85,7 +93,6 @@ fun SignUpForm(
         onAuthComplete = {
                 result ->
             user = result.user
-
         },
         onAuthError = {
             user = null
@@ -121,8 +128,6 @@ fun SignUpForm(
                 //do something with data
 
                 navController.navigate(route = Screens.DASHBOARD_SCREEN.name)
-
-
             }
         }
 
@@ -230,6 +235,21 @@ fun rememberFirebaseAuthLauncher(
             val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
             scope.launch {
                 Log.d("CREDENTIAL","${account.email} & ${account.idToken}")
+                sharedViewModel.insertUserExerciseInformation(
+                    UserExerciseInformation(
+                    ownerName = getOwnerNameFromEmail(account.email!!)!!,
+                        exerciseInformation = sharedViewModel.dummyData,
+                        finishedWorkout = 0,
+                        unfinishedWorkout = 0
+                )
+                )
+
+                //todo: requires a onboarding screen
+                sharedViewModel.signupUser(UserInformation(userName = getOwnerNameFromEmail(email = account.email!!)!!,
+                age = 22, email = account.email!!, password = "DUMMYPASSWORD", gender = "Male", bodyType = "Male"))
+
+                sharedViewModel.signedUpUser = getOwnerNameFromEmail(email = account.email!!)
+
                 val authResult = sharedViewModel.auth.signInWithCredential(credential).await()
                 onAuthComplete(authResult)
             }
