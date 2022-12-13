@@ -1,6 +1,7 @@
 package com.example.coopproject.screens
 
 import android.app.DatePickerDialog
+import android.util.Log
 import android.widget.DatePicker
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -88,8 +89,6 @@ fun OnBoardingScreenContent(
         mutableStateOf("1 to 2")
     }
 
-
-
     val itemsForGender = listOf<String>("Male","Female")
     val itemsForHoursActive = listOf<String>("1 to 2","3 to 6","7+")
     val itemsForBodyType = listOf<String>("Obese","Lean","Athletic")
@@ -100,11 +99,9 @@ fun OnBoardingScreenContent(
         mutableStateOf(mapForBodyType[selectedHoursActive.value])
     }
 
-
-
     Column(
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.padding(start = PADDING_MEDIUM, end = PADDING_MEDIUM, top = PADDING_MEDIUM)
+        modifier = Modifier.padding(start = BIG_PADDING, end = BIG_PADDING, top = TOP_PADDING_LARGE).fillMaxHeight(),
     )
     {
 
@@ -120,7 +117,7 @@ fun OnBoardingScreenContent(
         // Gender Stored in selectedValue.
         Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = BIG_PADDING)) {
+            .padding(bottom = PADDING_NORMAL)) {
             itemsForGender.forEach{
                 Row(modifier = Modifier
                     .weight(6f)
@@ -142,6 +139,11 @@ fun OnBoardingScreenContent(
             }
         }
 
+        Divider(
+            color = LighterAppThemeColor,
+            thickness = SMALL_THICKNESS,
+            modifier = Modifier.padding( bottom = PADDING_MEDIUM)
+        )
         // age.
 
 
@@ -203,9 +205,15 @@ fun OnBoardingScreenContent(
             }
         }
 
+        Divider(
+            color = LighterAppThemeColor,
+            thickness = SMALL_THICKNESS,
+            modifier = Modifier.padding(top = PADDING_MEDIUM, bottom = PADDING_MEDIUM)
+        )
+
         // body type
         Text(
-            text = "Body Type",
+            text = "Hours Active",
             color = Color.White,
             style = MaterialTheme.typography.body1,
             fontWeight = FontWeight.Bold,
@@ -218,13 +226,15 @@ fun OnBoardingScreenContent(
                     .weight(6f)
                     .clickable {
                         selectedHoursActive.value = it
+                        selectedBodyType.value = mapForBodyType[it]
 
                     }, verticalAlignment = Alignment.CenterVertically){
                     RadioButton(
                         modifier = Modifier.padding(end = 5.dp),
                         selected = selectedHoursActive.value == it,
                         onClick = {
-                            selectedHoursActive.value = it
+                            selectedHoursActive.value = it;
+                            selectedBodyType.value = mapForBodyType[it]
                         },
                         colors = RadioButtonDefaults.colors(selectedColor = LighterAppThemeColor, unselectedColor = Color.White)
                     )
@@ -238,15 +248,14 @@ fun OnBoardingScreenContent(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(55.dp)
-                .padding(start = BIG_PADDING, end = BIG_PADDING),
+                .padding(top = PADDING_MEDIUM, start = BIG_PADDING, end = BIG_PADDING),
             onClick = { onNextClicked(selectedGender.value,age.value.toString(),selectedBodyType.value.toString()) },
             colors = ButtonDefaults.buttonColors(LighterAppThemeColor),
             shape = RoundedCornerShape(PADDING_NORMAL), elevation = ButtonDefaults.elevation(PADDING_NORMAL)
         )
         {
             Text(
-                text = stringResource(R.string.start_exercising),
+                text = "Get Started",
                 color = Color.White,
                 style = MaterialTheme.typography.h6,
             )
@@ -283,4 +292,10 @@ fun OnBoardingScreenTopAppBar(
                 , style = MaterialTheme.typography.h6)
         }
     }
+}
+
+@Preview
+@Composable
+fun testPrev(){
+    OnBoardingScreenContent(onNextClicked = {x,y,z ->})
 }
